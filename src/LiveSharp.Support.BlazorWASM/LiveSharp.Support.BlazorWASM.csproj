@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\LiveSharp.Support.Blazor\BlazorInspector.cs" Link="BlazorInspector.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\BlazorUpdateHandler.cs" Link="BlazorUpdateHandler.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\WeakReferenceList.cs" Link="WeakReferenceList.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\Infrastructure\ReflectionExtensions.cs" Link="Infrastructure\ReflectionExtensions.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\BlazorAssemblyUpdateHandler.cs" Link="BlazorAssemblyUpdateHandler.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\BlazorUpdateHelpers.cs" Link="BlazorUpdateHelpers.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\Interceptors.cs" Link="Interceptors.cs" />
+        <Compile Include="..\LiveSharp.Support.Blazor\BlazorServiceProvider.cs" Link="BlazorServiceProvider.cs" />
+    </ItemGroup>
+
+<!--    <ItemGroup>-->
+<!--      <ProjectReference Include="..\LiveSharp.Runtime\LiveSharp.Runtime.csproj" />-->
+<!--    </ItemGroup>-->
+    
+    <ItemGroup>
+        <ProjectReference Include="..\LiveSharp\LiveSharp.csproj" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)..\..\build" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)..\..\build" />
+    </Target>
+</Project>

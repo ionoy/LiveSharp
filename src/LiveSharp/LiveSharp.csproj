@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>runtime.key.snk</AssemblyOriginatorKeyFile>        
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <DefineConstants>LIVESHARP_RUNTIME;</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\LiveSharp.Shared\Api\*.cs" Link="*.cs" />
+        <Compile Include="..\LiveSharp.Shared\Network\ILiveSharpTransport.cs" Link="ILiveSharpTransport.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+    </ItemGroup>
+
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)..\..\build" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)..\..\build" />
+    </Target>
+
+</Project>

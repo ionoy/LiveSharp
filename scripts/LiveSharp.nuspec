@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>LiveSharp</id>
+    <version>2.0.31</version>
+    <authors>Ion OÜ</authors>
+    <owners>Ion OÜ</owners>
+    <licenseUrl>https://creativecommons.org/licenses/by-nd/4.0/</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>LiveSharp allows you to update code  while your application is running. You can use it to build live user interfaces, update code on the fly and much more.</description>
+    <releaseNotes>Please download the latest server release from https://github.com/OYIon/LiveSharp/releases and uninstall LiveSharp VisualStudio extension</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>csharp live</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\build\LiveSharp.dll" target="lib\netstandard2.0" />
+    <file src="..\build\LiveSharp.targets" target="build" />
+    <file src="..\build\*.dll" target="build" />
+    <!-- <file src="..\build\*.pdb" target="build" /> -->
+    <file src="..\build\*.cs" target="build" />
+    <file src="..\build\*.template" target="build" />
+    <file src="..\build\Workspace\*.dll" target="build\Workspace" />
+    <file src="..\build\Workspace\*.config" target="build\Workspace" />
+    <file src="..\build\Workspace\*.exe" target="build\Workspace" />
+    <file src="..\build\Workspace\wwwroot\**" target="build\Workspace\wwwroot" />
+  </files>
+</package>

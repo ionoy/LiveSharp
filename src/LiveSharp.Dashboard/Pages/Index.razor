@@ -1,0 +1,45 @@
+﻿@page "/"
+@inject ILogger Logger 
+@inject WorkspaceInitializer WorkspaceInitializer
+
+@* <div class="header"> *@
+@*     <span class="primary-color">@_solutionPath</span> *@
+@*     <span class="secondary-color float-right">@_projectName</span> *@
+@* </div> *@
+
+<InspectorBox />
+
+@* <div class="panel-v"> *@
+@*     <div class="panel-h"> *@
+@*         <StatsBox /> *@
+@*     </div> *@
+@*     <div class="gutter-vertical"></div> *@
+@*     <div class="panel-h"> *@
+@*     </div> *@
+@* </div> *@
+@* <div class="gutter-horizontal"></div> *@
+@* <div class="panel-v"> *@
+@*     <div class="panel-h"> *@
+@*         <DebuggerBox /> *@
+@*     </div>  *@
+@*     <div class="gutter-vertical"></div> *@
+@*     <div class="panel-h"> *@
+@*         <LogBox /> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* <div class="footer"> *@
+@* </div> *@
+
+@code {
+    string _projectName;
+    string _solutionPath;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _projectName = WorkspaceInitializer.ProjectInfo.ProjectName;
+        _solutionPath = WorkspaceInitializer.ProjectInfo.SolutionPath;
+        
+        await base.OnInitializedAsync(); 
+    }
+}

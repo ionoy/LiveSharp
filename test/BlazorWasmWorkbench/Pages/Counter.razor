@@ -1,0 +1,30 @@
+﻿@page "/counter/{text}/{name}"
+@using System.Diagnostics
+
+<h1>Counter</h1>
+
+@Text 
+@Name
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public string Name { get; set; }
+
+
+    public int B { get; set; }
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        Debug.WriteLine("Ahoy");
+        currentCount += 3;
+    }
+
+}

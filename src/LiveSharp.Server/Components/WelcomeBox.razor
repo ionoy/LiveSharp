@@ -1,0 +1,69 @@
+﻿@using HtmlAgilityPack
+@using Microsoft.Extensions.Logging
+
+@inject ServerLogger Logger
+
+<div class="flex divide-x divide-gray-600">
+    <div class="flex-1 px-8 flex justify-center md:align-middle">
+        <div class="max-w-md">
+            <h2 class="font-bold text-xl mb-4">Welcome to LiveSharp</h2>
+        
+            <div><span class="text-green-400">Documentation</span> <a href="https://www.livesharp.net/help/">https://www.livesharp.net/help/</a></div>
+            <div><span class="text-green-400">Release information</span> <a href="https://www.livesharp.net/news/">https://www.livesharp.net/news/</a></div>
+            <div><span class="text-green-400">Gitter</span> <a href="https://gitter.im/LiveSharp/Lobby">https://gitter.im/LiveSharp/Lobby</a> (@@ionoy)</div>
+            <div><span class="text-green-400">Discord</span> <a href="https://discord.gg/uEHr774K">https://discord.gg/uEHr774K</a></div>
+            <div><span class="text-green-400">License purchasing</span> <a href="https://www.livesharp.net/#licensing">https://www.livesharp.net/#licensing</a></div>
+        
+            <p class="py-2">
+                Log files locations are %TEMP%\LiveSharp on Windows and $TMPDIR/LiveSharp on OSX
+            </p>
+            
+            <ol class="list-decimal">
+                <li class="pb-2">
+                    Make sure 'LiveSharp' package is installed in the main project (the one with Program.Main or App.Initialize)
+                    Also install 'LiveSharp' into other projects that should be hot-reloadable
+                </li>
+                <li>
+                    Run the application
+                    If nothing appears here after application has started, check the debugging Output window for 'livesharp: ' messages
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="flex-1 px-8 overflow-auto">
+        <h2 class="font-bold text-xl mb-4">News</h2>
+
+        @((MarkupString) _news)
+    </div>
+</div>
+
+@code {
+    private string _news;
+    
+    protected override void OnInitialized()
+    {
+        LoadNews();
+        
+        base.OnInitialized();
+    }
+
+    private void LoadNews()
+    {
+        Task.Run(async () => {
+            try {
+                var web = new HtmlWeb();
+                var htmlDoc = await web.LoadFromWebAsync(@"https://www.livesharp.net/news/");
+                var node = htmlDoc.DocumentNode.SelectSingleNode("//main");
+                    
+                _news = node.InnerHtml;
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception e) {
+                Logger.LogWarning("Unable to load LiveSharp news from https://www.livesharp.net/news/" + e.Message);
+            }
+        });
+}
+    
+}

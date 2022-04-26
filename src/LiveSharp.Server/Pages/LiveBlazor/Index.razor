@@ -1,0 +1,66 @@
+﻿@page "/"
+@using System.Collections.Concurrent
+
+@implements IDisposable
+@inject MatchmakingService MatchmakingService
+@inject ServerLogger Logger
+
+<div class="h-screen overflow-y-auto">
+    @if (_currentWorkspace == null) {
+        <div class="p-4">
+            Hello from Live Blazor!
+        </div>
+    } else {
+        <iframe class="w-full h-full" src="@(_currentWorkspace.Address.serverAddress.Replace("[::]", "localhost.livesharp.net"))" />
+    }
+</div>
+
+@code {
+    private IDisposable _workspaceSubscription;
+    private IReadOnlyList<WorkspaceInfo> _workspaces = new WorkspaceInfo[0];
+    private WorkspaceInfo _currentWorkspace;
+
+    protected override void OnInitialized()
+    {
+        _workspaces = MatchmakingService.GetWorkspaces();
+        _workspaceSubscription = MatchmakingService
+            .WorkspacesUpdated
+            .Subscribe(WorkspacesUpdated);
+
+        if (_workspaces.Count > 0)
+            _currentWorkspace = _workspaces[0];
+    }
+
+    void WorkspacesUpdated(ConcurrentDictionary<string, WorkspaceInfo> workspaces)
+    {
+        InvokeAsync(() =>
+        {
+            _workspaces = workspaces.Values.ToArray();
+
+            var workspaceNoLongerExists = !_workspaces.Contains(_currentWorkspace);
+
+            if (workspaceNoLongerExists) {
+                if (_workspaces.Count > 0)
+                    _currentWorkspace = _workspaces[0];
+                else 
+                    _currentWorkspace = null;
+            }
+
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        _workspaceSubscription?.Dispose();
+    }
+    
+    private void StopWorkspace(WorkspaceInfo workspace)
+    {
+        MatchmakingService.StopWorkspace(workspace);
+    }
+    private void SelectWorkspace(WorkspaceInfo ws)
+    {
+        _currentWorkspace = ws;
+    }
+}

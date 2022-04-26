@@ -1,0 +1,92 @@
+﻿@page "/counter/{newprop}"
+
+@inject IJSRuntime JsRuntime
+asdasd123
+<h1>Counter</h1>
+@newprop
+@newprop2  
+start @newprop6 sdf
+@Input
+<p>Current count 33s3: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    [Parameter]
+    public string Input { get; set; }
+    [Parameter]
+    public string newprop { get; set; }
+    [Parameter]
+    public string newprop2 { get; set; }
+    [Parameter]
+    public string newprosps5 { get; set; }
+    
+    [Parameter]
+    public string newprop6 { get; set; }
+    public string nedswsфыыыss { get; set; }
+    
+    private int currentCount = 0;
+    private Index.EngineType _engine = Index.EngineType.Vertica;
+
+    private void Method()
+    {
+    }
+    
+    private void IncrementCount()
+    {
+        
+        var confirmed = JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?").Result; //Only added this line
+        var array = Enumerable.Range(0, 3).Select(i => i.ToString()).ToArray();
+        currentCount += 1;
+
+        switch (_engine) {
+            case (int)Index.EngineType.Synapse:
+                break;
+            case Index.EngineType.Oracle:
+                break;
+            case Index.EngineType.ODBC:
+                break;
+            case Index.EngineType.VerticaOdbc:
+                break;
+            case Index.EngineType.SQLServer:
+                break;
+            case Index.EngineType.DB2Luw:
+                break;
+            case Index.EngineType.DB2zOS:
+                break;
+            case Index.EngineType.SqlAzure:
+                break;
+            case Index.EngineType.Firebird:
+                break;
+            case Index.EngineType.Ingres:
+                break;
+            case Index.EngineType.Interbase:
+                break;
+            case Index.EngineType.MySQL:
+                break;
+            case Index.EngineType.NuoDb:
+                break;
+            case Index.EngineType.OracleRdb:
+                break;
+            case Index.EngineType.Pervasive:
+                break;
+            case Index.EngineType.Postgres:
+                break;
+            case Index.EngineType.RedShift:
+                break;
+            case Index.EngineType.SqlBase:
+                break;
+            case Index.EngineType.SybaseAse:
+                break;
+            case Index.EngineType.Teradata:
+                break;
+            case Index.EngineType.Vertica:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        if (_engine >  (int)Index.EngineType.Synapse) {
+            Console.WriteLine("Hello122!");
+        }  
+    }
+}

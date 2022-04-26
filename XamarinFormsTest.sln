@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamarinFormsTest", "test\XamarinFormsTest\XamarinFormsTest\XamarinFormsTest.csproj", "{1D26618B-E84C-411C-8888-404A0A7BC2EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFormsTest.Android", "test\XamarinFormsTest\XamarinFormsTest.Android\XamarinFormsTest.Android.csproj", "{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Runtime", "src\LiveSharp.Runtime\LiveSharp.Runtime.csproj", "{A42EA30E-7CDD-4DD5-B78D-0356BA901FB7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD08FBD6-630D-4AE4-850D-B461D1F8A82D} = {DD08FBD6-630D-4AE4-850D-B461D1F8A82D}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveXaml.Standard", "deps\XamarinLive\src\LiveXaml.Standard\LiveXaml.Standard.csproj", "{DD08FBD6-630D-4AE4-850D-B461D1F8A82D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Support.XamarinForms", "deps\LiveSharp\src\LiveSharp.Support.XamarinForms\LiveSharp.Support.XamarinForms.csproj", "{E1DDF68C-BE54-4F3C-A62E-128D28126D33}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D26618B-E84C-411C-8888-404A0A7BC2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D26618B-E84C-411C-8888-404A0A7BC2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D26618B-E84C-411C-8888-404A0A7BC2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D26618B-E84C-411C-8888-404A0A7BC2EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF40060-7CA9-4E09-8DE9-B16CDC00D883}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A42EA30E-7CDD-4DD5-B78D-0356BA901FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A42EA30E-7CDD-4DD5-B78D-0356BA901FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A42EA30E-7CDD-4DD5-B78D-0356BA901FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A42EA30E-7CDD-4DD5-B78D-0356BA901FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD08FBD6-630D-4AE4-850D-B461D1F8A82D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD08FBD6-630D-4AE4-850D-B461D1F8A82D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD08FBD6-630D-4AE4-850D-B461D1F8A82D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD08FBD6-630D-4AE4-850D-B461D1F8A82D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1DDF68C-BE54-4F3C-A62E-128D28126D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1DDF68C-BE54-4F3C-A62E-128D28126D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1DDF68C-BE54-4F3C-A62E-128D28126D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1DDF68C-BE54-4F3C-A62E-128D28126D33}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3FA3301-DFF2-4AC0-9BF3-B97B9869F351}
+	EndGlobalSection
+EndGlobal

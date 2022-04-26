@@ -1,0 +1,88 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@font-face {
+    font-family: regular;
+    src: url(fonts/SourceSansPro-Regular.otf);
+}
+
+@font-face {
+    src: url(fonts/SourceSansPro-Light.otf);
+}
+
+html {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+body {
+    @apply text-orange-100;
+}
+
+h1 {
+    @apply text-4xl antialiased font-bold
+}
+
+h2 {
+    @apply text-2xl antialiased font-bold
+}
+
+h1 {
+    font-family: regular;
+}
+
+section {
+    @apply h-full;
+}
+
+.nav-item {
+    @apply text-lg block
+}
+
+.nav-item.selected {
+    @apply text-gray-900 bg-gray-100;
+}
+
+.nav-item.selected i {
+    @apply text-gray-900;
+}
+
+.selected_tab {
+    @apply text-gray-900 font-bold;
+}
+
+.external-html {
+    @apply w-3/4 mx-auto select-text;
+}
+
+.external-html h2 {
+    @apply pb-4 pt-2 text-lg;
+}
+
+.external-html p {
+    @apply pb-2 text-sm;
+}
+
+.external-html ul {
+    @apply pb-2;
+}
+.external-html li {
+    list-style: disc outside none;
+}
+
+.external-html a {
+    @apply underline;
+}
+
+.debugger-span {
+    @apply underline cursor-pointer;
+}
+
+.debugger-span-value {
+    display: none;
+}

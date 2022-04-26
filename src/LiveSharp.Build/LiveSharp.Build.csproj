@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{56A24833-8FF6-4876-B561-FACBBD422376}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LiveSharp.Build</RootNamespace>
+    <AssemblyName>LiveSharp.Build</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BuildLogger.cs" />
+    <Compile Include="BuildTaskLogger.cs" />
+    <Compile Include="IgnoreFile.cs" />
+    <Compile Include="LiveSharpTask.cs" />
+    <Compile Include="PlatformCheckTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LiveBlazor-local.targets">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="LiveBlazor.targets">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="LiveSharp-noruntime.targets" />
+    <None Include="livesharp.blazor.config" />
+    <None Include="LiveSharp.targets">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LiveSharp-local.targets" />
+    <Content Include="_config.cs.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LiveSharp.Rewriters\LiveSharp.Rewriters.csproj">
+      <Project>{93974419-06b9-475f-94b2-10c1466b4fd9}</Project>
+      <Name>LiveSharp.Rewriters</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <CombinePath BasePath="$(SolutionDir)" Paths="build">
+      <Output TaskParameter="CombinedPaths" PropertyName="BuildDir" />
+    </CombinePath>
+    <CreateItem Include="$(TargetDir)Mono.*.dll">
+      <Output TaskParameter="Include" ItemName="MonoFiles" />
+    </CreateItem>
+    <CreateItem Include="$(ProjectDir)*.targets">
+      <Output TaskParameter="Include" ItemName="TargetsFiles" />
+    </CreateItem>
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)build" />
+    <Copy SourceFiles="@(MonoFiles)" DestinationFolder="$(BuildDir)" />
+    <Copy SourceFiles="@(TargetsFiles)" DestinationFolder="$(BuildDir)" />
+    <Copy SourceFiles="$(ProjectDir)\_config.cs.template" DestinationFolder="$(BuildDir)" />
+  </Target>
+</Project>

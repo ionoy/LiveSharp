@@ -1,0 +1,61 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>LiveSharp.ReSharperRider</AssemblyName>
+    <RootNamespace>LiveSharp.ReSharperRider</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <DefineConstants>$(DefineConstants);RIDER</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+    <PackageReference Include="JetBrains.Rider.SDK" Version="2019.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
+  <!-- TODO: uncomment for xaml icons -->
+  <!--<ItemGroup>-->
+    <!--<Reference Include="System.Xaml" />-->
+    <!--<Reference Include="WindowsBase" />-->
+  <!--</ItemGroup>-->
+
+  <!--<ItemGroup>-->
+    <!--<Reference Include="PresentationCore" />-->
+    <!--<Reference Include="PresentationFramework" />-->
+
+    <!--<ThemedIconsXamlV3 Include="**\*-color.xaml">-->
+      <!--<ThemeColumns>Color</ThemeColumns>-->
+      <!--<RemoveBackgroundElement>True</RemoveBackgroundElement>-->
+      <!--<SubType>Designer</SubType>-->
+      <!--<Generator>MSBuild:Compile</Generator>-->
+    <!--</ThemedIconsXamlV3>-->
+    <!--<ThemedIconsXamlV3 Include="**\*-graydark.xaml">-->
+      <!--<ThemeColumns>GrayDark</ThemeColumns>-->
+      <!--<RemoveBackgroundElement>True</RemoveBackgroundElement>-->
+      <!--<SubType>Designer</SubType>-->
+      <!--<Generator>MSBuild:Compile</Generator>-->
+    <!--</ThemedIconsXamlV3>-->
+  <!--</ItemGroup>-->
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+</Project>

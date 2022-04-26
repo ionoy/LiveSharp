@@ -1,0 +1,20 @@
+var solution = _workspace.CurrentSolution;
+var docs = solution.Projects.SelectMany(p => p.Documents);
+
+foreach (var doc in docs) {
+    var semanticModel = await doc.GetSemanticModelAsync().ConfigureAwait(false);
+    var root = await doc.GetSyntaxRootAsync().ConfigureAwait(false);
+    var methods = root.DescendantNodes()
+                      .OfType<MethodDeclarationSyntax>()
+                      .ToArray();
+    var updatedMethods = new List<UpdatedMethod>();
+
+    foreach (var method in methods) {
+            if (!(semanticModel.GetDeclaredSymbol(method) is IMethodSymbol methodSymbol))
+                continue;
+
+            if (IsInjectedMethod(methodSymbol)) {
+                var typeName = methodSymbol.ContainingType.GetFullyQualifedName();
+                var methodIdentifier = methodSymbol.GetMethodIdentifier(includeTypeName: false);
+
+}

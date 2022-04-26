@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="..\..\build\LiveSharp.dll" />
+    </ItemGroup>
+    <Import Project="..\..\build\livesharp-local.targets" />
+</Project>

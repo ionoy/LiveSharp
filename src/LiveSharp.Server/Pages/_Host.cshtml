@@ -1,0 +1,28 @@
+﻿@page "/"
+@using LiveSharp.Server
+
+@namespace LiveSharp.Server.Pages
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>LiveBlazor Dashboard</title>
+    <base href="~/"/>
+    <link href="css/app.min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+<app>
+    <component type="typeof(App)" render-mode="ServerPrerendered"/>
+</app>
+
+<script src="_framework/blazor.server.js"></script>
+</body>
+</html>

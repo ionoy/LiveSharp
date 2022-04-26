@@ -1,0 +1,55 @@
+﻿@using LiveSharp.Dashboard.Services
+@using System.Collections.Concurrent
+@inject DebuggingService DebuggingService
+@inject DashboardLogger Logger
+@implements IDisposable
+
+<div class="box diagnostics">
+    <div class="diagnostics-nav">
+        @foreach (var panel in _panels) {
+            <a href="#" @onclick="@(_ => _selectedPanel = panel.Key)" class="@(_selectedPanel == panel.Key ? "selected" : string.Empty)">
+                @((MarkupString) panel.Key)
+            </a>
+        }
+    </div>
+    
+    @foreach (var panel in _panels) {
+        if (_selectedPanel == panel.Key) {
+            <div class="diagnostic-panel">
+                @((MarkupString) panel.Value)
+            </div>
+        }
+    }
+</div>
+
+@code {
+    ConcurrentDictionary<string, string> _panels = new ();
+    
+    string _selectedPanel = "Inspector";
+    
+    protected override void OnInitialized()
+    {
+        DebuggingService.PanelUpdated += OnPanelUpdated; 
+        DebuggingService.PanelsCleared += OnPanelsCleared;
+
+        _panels = DebuggingService.Panels;
+        
+        base.OnInitialized();
+    }
+
+    private void OnPanelsCleared(object sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnPanelUpdated(object sender, PanelUpdate e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        DebuggingService.PanelUpdated -= OnPanelUpdated;
+        DebuggingService.PanelsCleared -= OnPanelsCleared; 
+    }
+}

@@ -1,0 +1,148 @@
+﻿@page "/"
+@using WebSocketSharp
+@using System.Diagnostics
+@using Models.Medew
+@using BlazorComponents
+@using BlazorWorkbench.Data
+@inject IJSRuntime JsRuntime
+
+<h1>Hello!123asdasd</h1>
+
+@HelloMessage2
+
+<div>
+</div>
+
+@_newFieldxzcvxcv
+Field value: @_field @_field2
+
+<SurveyPrompt Title="How is Blazor working for you?"/>
+
+@* <Component1 Parameter="aaasdfsdf" /> *@
+<Component1></Component1>
+@code {
+    private string _field = "Initial value of the fields";
+    private string _field2 = "Initial value of the field 3333234234";
+    private string _newFieldxzcvxcv = "new field ";
+    
+    [Parameter] public IEnumerable<EngineType> Engines { get; set; }
+
+    [Parameter] public string Name1 { get; set; }
+    [Parameter] public string Name21 { get; set; }
+
+    [Parameter]
+    public string HelloMessage { get; set; } = "oh, hello there govna";
+    public string HelloMessage2 { get; set; } = "oh, hello there govna2";
+    public enum EngineType
+    {
+        Synapse, Oracle, ODBC, VerticaOdbc, SQLServer,
+        DB2Luw,
+        DB2zOS,
+        SqlAzure,
+        Firebird,
+        Ingres,
+        Interbase,
+        MySQL,
+        NuoDb,
+        OracleRdb,
+        Pervasive,
+        Postgres,
+        RedShift,
+        SqlBase,
+        SybaseAse,
+        Teradata,
+        Vertica
+    }
+
+    EngineType _engine = EngineType.Synapse;
+    
+    protected void A()
+    {
+        
+    }
+    
+    protected void Z()
+    {
+        
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        this.StateHasChanged();
+        WebSocket();
+        Trace.WriteLine("Hello there mate21234".Modify());
+
+        // var confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        var a = Enumerable.Range(0, 10).Select(i => i * 4).Sum();
+
+        Debug.WriteLine("Generic method result: " + GenericType.GenericMethod(1));
+        
+        Engines = new[]
+        {
+    //EngineType.SybaseAsa,
+    //EngineType.SybaseIq,
+            EngineType.DB2Luw,
+            EngineType.DB2zOS,
+            EngineType.SqlAzure,
+            EngineType.Synapse,
+            EngineType.Firebird,
+            EngineType.Ingres,
+            EngineType.Interbase,
+            EngineType.MySQL,
+            EngineType.NuoDb,
+            EngineType.OracleRdb,
+            EngineType.Pervasive,
+            EngineType.Postgres,
+            EngineType.RedShift,
+            EngineType.SQLServer,
+            EngineType.SqlBase,
+            EngineType.SybaseAse,
+            EngineType.Teradata,
+            EngineType.Vertica,
+            EngineType.VerticaOdbc,
+    //EngineType.DevNull,
+            EngineType.Oracle,
+            EngineType.ODBC
+        };
+        
+        
+        
+        await base.OnInitializedAsync();
+    }
+    
+    private static int ThisBreaksLiveSharp() {
+        var a = new []{1, 2, 3};
+        dynamic d = a;
+        return d[0];
+    }
+
+    private static void WebSocket()
+    {
+        using var ws = new WebSocket("ws://localhost:7123");
+        Debug.WriteLine("Web socket2344");
+    }
+    
+    enum SearchType
+    {
+        Manufacturer,
+        Category,
+        Product
+    }
+    
+    class Item
+    {
+        public SearchType SearchType { get; set; }
+        public string SearchString { get; set; }
+
+        public Item(SearchType searchType, string searchString)
+        {
+            SearchType = searchType;
+            SearchString = searchString;
+        }
+    }
+
+    private void SetEngine(EngineType engine)
+    {
+        
+    }
+}

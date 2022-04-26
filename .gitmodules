@@ -1,0 +1,7 @@
+[submodule "deps/XamarinLive"]
+	path = deps/XamarinLive
+	url = https://github.com/ionoy/XamarinLive.git
+	branch = without-registration
+[submodule "deps/LiveSharp"]
+	path = deps/LiveSharp
+	url = https://github.com/OYIon/LiveSharp.git

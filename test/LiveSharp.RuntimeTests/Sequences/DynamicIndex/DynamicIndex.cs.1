@@ -1,0 +1,18 @@
+﻿namespace LiveSharp.RuntimeTests.Sequences.DynamicIndex
+{
+    public class DynamicIndex : TestsBase, IRunnableSequence
+    {
+        public void Run()
+        {
+            var a = ThisBreaksLiveSharp();
+            
+            AssertEqual(a, 1);
+        }
+        
+        private static int ThisBreaksLiveSharp() {
+            var a = new []{1, 2};
+            dynamic d = a;
+            return d[0];
+        }
+    }
+}

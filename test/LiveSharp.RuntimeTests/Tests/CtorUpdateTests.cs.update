@@ -1,0 +1,60 @@
+﻿namespace LiveSharp.RuntimeTests
+{
+    public partial class CtorUpdateTests : TestsBase
+    {
+        class CtorDummyBase
+        {
+            public bool BaseCalled { get; set; }
+            protected CtorDummyBase(bool result)
+            {
+                System.Console.WriteLine("from base: " + result);
+                BaseCalled = result;
+            }
+        }
+        
+        class CtorDummy : CtorDummyBase
+        {
+            public bool GetOnlyProperty { get; }
+			public readonly bool ReadOnlyField;
+            public bool CtorCalled = false;
+
+            public CtorDummy() : base(true)
+            {
+                CtorCalled = true;
+				GetOnlyProperty = true;
+				ReadOnlyField = true;
+            }
+
+            public CtorDummy(bool result) : base(result)
+            {
+                System.Console.WriteLine(result);
+                CtorCalled = result;
+                System.Console.WriteLine(CtorCalled);
+				GetOnlyProperty = result;
+                System.Console.WriteLine(GetOnlyProperty);
+				ReadOnlyField = result;
+                System.Console.WriteLine(ReadOnlyField);
+            }
+        }
+        
+        public void Test0()
+        {
+            var dummy = new CtorDummy();
+
+            Assert(dummy.CtorCalled, "CtorCalled");
+            Assert(dummy.GetOnlyProperty, "GetOnlyProperty");
+            Assert(dummy.ReadOnlyField, "ReadOnlyField");
+            Assert(dummy.BaseCalled, "BaseCalled");
+        }
+
+        public void Test1()
+        {
+            var dummy = new CtorDummy(true);
+
+            Assert(dummy.CtorCalled, "CtorCalled");
+            Assert(dummy.GetOnlyProperty, "GetOnlyProperty");
+            Assert(dummy.ReadOnlyField, "ReadOnlyField");
+            Assert(dummy.BaseCalled, "BaseCalled");
+        }
+    }
+}

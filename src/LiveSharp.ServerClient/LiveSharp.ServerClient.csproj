@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)..\..\</SolutionDir>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiveSharp\LiveSharp.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)build" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)build\Workspace" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionDir)build" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionDir)build\Workspace" />
+    <!--    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)build&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)build&quot;&#xD;&#xA;copy &quot;$(SolutionDir)deps\XamarinLive\src\LiveXaml.Standard\bin\Debug\netstandard2.0\LiveXaml.Standard.dll&quot; &quot;$(SolutionDir)build&quot;&#xD;&#xA;copy &quot;$(SolutionDir)deps\XamarinLive\src\LiveXaml.Standard\bin\Debug\netstandard2.0\LiveXaml.Standard.pdb&quot; &quot;$(SolutionDir)build&quot;" />-->
+  </Target>
+</Project>

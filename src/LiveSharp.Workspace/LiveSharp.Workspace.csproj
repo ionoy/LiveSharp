@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>9</LangVersion>
+    <!-- <OutputType>Exe</OutputType> -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RootNamespace>LiveSharp</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0-2.final" />
+<!--    <PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="5.0.4" />-->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0-2.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0-2.final" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.2" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="system.reflection.typeextensions" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ServerClient" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="$(SolutionDir)deps\Razor\Microsoft.AspNetCore.Razor.Language.dll" />
+    <Reference Include="$(SolutionDir)deps\Razor\Microsoft.CodeAnalysis.Razor.dll" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\LiveSharp.Shared\**\*.cs" Link="(Shared)\*.cs" />
+    <Compile Remove="..\LiveSharp.Shared\obj\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiveSharp.Rewriters\LiveSharp.Rewriters.csproj" />
+    <ProjectReference Include="..\LiveSharp\LiveSharp.csproj" />
+  </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <CombinePath BasePath="$(ProjectDir)..\..\build" Paths="Workspace">
+      <Output TaskParameter="CombinedPaths" PropertyName="WorkspaceDir" />
+    </CombinePath>
+    <CombinePath BasePath="$(ProjectDir)..\..\build" Paths="LiveBlazorWorkspace">
+      <Output TaskParameter="CombinedPaths" PropertyName="LiveBlazorWorkspaceDir" />
+    </CombinePath>
+    <CreateItem Include="$(TargetDir)*.dll">
+      <Output TaskParameter="Include" ItemName="BinaryFiles" />
+    </CreateItem>
+    <CreateItem Include="$(TargetDir)*.pdb">
+      <Output TaskParameter="Include" ItemName="PdbFiles" />
+    </CreateItem>
+    <CreateItem Include="$(TargetDir)*.config">
+      <Output TaskParameter="Include" ItemName="ConfigFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(WorkspaceDir)" />
+    <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(WorkspaceDir)" />
+    <Copy SourceFiles="@(ConfigFiles)" DestinationFolder="$(WorkspaceDir)" />
+    <Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(LiveBlazorWorkspaceDir)" />
+    <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(LiveBlazorWorkspaceDir)" />
+    <Copy SourceFiles="@(ConfigFiles)" DestinationFolder="$(LiveBlazorWorkspaceDir)" />
+  </Target>
+<!--  <Import Project="..\..\build\LiveSharp-noruntime.targets" />-->
+</Project>

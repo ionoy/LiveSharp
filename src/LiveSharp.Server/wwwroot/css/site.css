@@ -1,0 +1,25 @@
+:root {
+    --bg-color: #2a2a2a;
+    --surface-color: #393939;
+    --primary-color: #ff6768;
+    --secondary-color: #59c764;
+    --third-color: #7391d9;
+    --text-on-backgroud: #b1b1b1;
+    --text-on-surface: #e1e1e1;
+    --text-on-primary: #222222;
+    --text-on-secondary: #333333;
+}
+
+html, body {
+    color: var(--text-on-surface);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+}
+
+a {
+    text-decoration: underline;
+    
+}

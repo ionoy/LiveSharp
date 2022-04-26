@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Mono.Cecil" Version="0.11.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Infrastructure" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <CreateItem Include="$(TargetDir)*.dll">
+            <Output TaskParameter="Include" ItemName="BinaryFiles" />
+        </CreateItem>
+        <CreateItem Include="$(TargetDir)*.pdb">
+            <Output TaskParameter="Include" ItemName="PdbFiles" />
+        </CreateItem>
+        <Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(ProjectDir)..\..\build" />
+        <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(ProjectDir)..\..\build" />
+    </Target>
+
+</Project>

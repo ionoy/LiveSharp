@@ -1,0 +1,117 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+
+
+using Xamarin.Forms.Markup;
+using Xamarin.Forms.Shapes;
+
+
+namespace XamarinWorkbench
+{
+    public partial class MainPage : ContentPage
+    {
+        private const float DesiredFps = 25;
+        private DateTime _lastFrame = DateTime.Now;
+        private GameState _gameState;
+        private Dictionary<Bubble, Ellipse> _bubbleShapes = new Dictionary<Bubble, Ellipse>();
+        
+        public MainPage()
+        {
+            Build();
+        }
+
+        public void Build()
+        {
+            _gameState = new GameState();
+            
+            var mainGrid = new Grid();
+            
+            Content = mainGrid;
+
+            AppendFrame(mainGrid);
+        }
+
+        private void AppendFrame(Grid mainGrid)
+        {
+            Device.PlatformServices.BeginInvokeOnMainThread(() =>
+            {
+                var frameTime = 1000 / DesiredFps;
+                var now = DateTime.Now;
+                
+                if (now - _lastFrame > TimeSpan.FromMilliseconds(frameTime)) {
+                    _lastFrame = now;
+                    
+                    ProcessFrame(mainGrid);
+                }
+                else {
+                    AppendFrame(mainGrid);
+                }
+            });
+        }
+
+        private void ProcessFrame(Grid mainGrid)
+        {
+            if (_gameState.NeedNewBubble) {
+                var bubble = _gameState.SpawnNewBubble();
+                var areaWidth = mainGrid.Width; 
+                var areaHeight = mainGrid.Height;
+                
+                _bubbleShapes[bubble] = new Ellipse {
+                    Margin = new Thickness(areaWidth * bubble.X, areaHeight * bubble.Y, 0,0)
+                };
+            }
+
+            foreach (var bubble in _gameState.Bubbles) {
+                bubble.Update(DateTime.Now);
+
+            }
+
+
+
+            AppendFrame(mainGrid);
+        }
+
+        class GameState
+        {
+            public int BubbleCounter { get; set; }
+
+            public bool NeedNewBubble => (DateTime.Now - _lastBubbleSpawn) > BubbleInterval;
+            public TimeSpan BubbleInterval => TimeSpan.FromSeconds(1 / (1 + BubbleCounter / 10.0f));
+            public List<Bubble> Bubbles { get; set; } = new List<Bubble>();
+
+            private DateTime _lastBubbleSpawn;
+            private readonly Random _random = new Random();
+            public Bubble SpawnNewBubble()
+            {
+                var bubble = new Bubble {
+                    X = _random.NextDouble(),
+                    Y = _random.NextDouble()
+                };
+                Bubbles.Add(bubble);
+                
+                _lastBubbleSpawn = DateTime.Now;
+                return bubble;
+            }
+        }
+
+        class Bubble
+        {
+            public double X { get; set; }
+            public double Y { get; set; }
+
+            private readonly DateTime _birthTime = DateTime.Now;
+            
+            public void Update(DateTime now)
+            {
+                var age = now - _birthTime;
+                var lifeSpan = 5.0;
+                var halfLife = lifeSpan / 2.0;
+
+            }
+        }
+    }
+}

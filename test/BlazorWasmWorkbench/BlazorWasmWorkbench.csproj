@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.8"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.8" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.8" />
+        <PackageReference Include="System.Net.Http.Json" Version="5.0.0-preview.3.20214.6" />
+    </ItemGroup>
+
+<!--  <Import Project="..\..\build\LiveSharp-local.targets" />-->
+
+  <ItemGroup>
+    <Reference Include="..\..\build\LiveSharp.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LiveSharp.Support.BlazorWASM\LiveSharp.Support.BlazorWASM.csproj" />
+  </ItemGroup>
+</Project>

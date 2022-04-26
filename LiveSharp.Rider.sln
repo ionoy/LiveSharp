@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.RiderPlugin", "src\LiveSharp.Rider\src\dotnet\LiveSharp.ReSharperRider\LiveSharp.RiderPlugin.csproj", "{084172D1-A9C6-46D0-96AD-05C5B09A5E5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{4A9ABB95-3762-448B-B5BF-099E46DB22DE}"
+	ProjectSection(SolutionItems) = preProject
+		src\LiveSharp.Rider\CHANGELOG.md = src\LiveSharp.Rider\CHANGELOG.md
+		src\LiveSharp.Rider\src\dotnet\Plugin.props = src\LiveSharp.Rider\src\dotnet\Plugin.props
+		src\LiveSharp.Rider\src\rider\main\resources\META-INF\plugin.xml = src\LiveSharp.Rider\src\rider\main\resources\META-INF\plugin.xml
+		src\LiveSharp.Rider\README.md = src\LiveSharp.Rider\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.RiderPlugin.Tests", "src\LiveSharp.Rider\src\dotnet\LiveSharp.ReSharperRider.Tests\LiveSharp.RiderPlugin.Tests.csproj", "{01C3DEF5-50B2-47CB-9467-19BC6DDF9D3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.ReSharperPlugin", "src\LiveSharp.Rider\src\dotnet\LiveSharp.ReSharperRider\LiveSharp.ReSharperPlugin.csproj", "{59B83D32-0285-4803-89B4-1C5EA8ADF3E6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveSharp.Ide", "src\LiveSharp.Ide\LiveSharp.Ide.csproj", "{8078497F-729F-4A45-8A48-929D8609FE5D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{084172D1-A9C6-46D0-96AD-05C5B09A5E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{084172D1-A9C6-46D0-96AD-05C5B09A5E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{084172D1-A9C6-46D0-96AD-05C5B09A5E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{084172D1-A9C6-46D0-96AD-05C5B09A5E5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C3DEF5-50B2-47CB-9467-19BC6DDF9D3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C3DEF5-50B2-47CB-9467-19BC6DDF9D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C3DEF5-50B2-47CB-9467-19BC6DDF9D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C3DEF5-50B2-47CB-9467-19BC6DDF9D3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59B83D32-0285-4803-89B4-1C5EA8ADF3E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B83D32-0285-4803-89B4-1C5EA8ADF3E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59B83D32-0285-4803-89B4-1C5EA8ADF3E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59B83D32-0285-4803-89B4-1C5EA8ADF3E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8078497F-729F-4A45-8A48-929D8609FE5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8078497F-729F-4A45-8A48-929D8609FE5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34022CEF-1F2E-4F85-B5EA-B580B1C8D0A3}
+	EndGlobalSection
+EndGlobal

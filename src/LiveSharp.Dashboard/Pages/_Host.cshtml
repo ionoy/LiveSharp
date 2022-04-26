@@ -1,0 +1,69 @@
+﻿@page "/"
+@namespace LiveSharp.Dashboard.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>LiveSharp Dashboard</title>
+    <base href="~/"/>
+    <link href="css/site.css" rel="stylesheet"/>
+</head>
+<body>
+<app>
+    <component type="typeof(App)" render-mode="ServerPrerendered"/>
+</app>
+
+@* <div id="blazor-error-ui"> *@
+@*     <environment include="Staging,Production"> *@
+@*         An error has occurred. This application may no longer respond until reloaded. *@
+@*     </environment> *@
+@*     <environment include="Development"> *@
+@*         An unhandled exception has occurred. See browser dev tools for details. *@
+@*     </environment> *@
+@*     <a href="" class="reload">Reload</a> *@
+@*     <a class="dismiss">🗙</a> *@
+@* </div> *@
+
+<script src="_framework/blazor.server.js"></script>
+
+@* <script>     *@
+@*   window.addEventListener("DOMContentLoaded", function() { *@
+@*       var offset = 60; *@
+@*       var verticalGutter = document.querySelector('.gutter-vertical'); *@
+@*       var previousSibling = verticalGutter.previousElementSibling; *@
+@*       var nextSibling = verticalGutter.nextElementSibling; *@
+@*       var startPercent, documentHeight; *@
+@*       var isDragging = false; *@
+@*        *@
+@*       function initDrag(e) { *@
+@*           isDragging = true; *@
+@*       } *@
+@*        *@
+@*       function doDrag(e) { *@
+@*           if (isDragging) { *@
+@*               documentHeight = document.defaultView.getComputedStyle(document.documentElement).style.height; *@
+@*               var newPercent = ((e.clientY - offset) / documentHeight) * 100;  *@
+@*               var newPercentNext = 100 - newPercent;  *@
+@*               previousSibling.style.height = "calc(" + newPercent + "% - 2px)"; *@
+@*               nextSibling.style.height = "calc(" + newPercentNext + "% - 2px)"; *@
+@*           } *@
+@*       } *@
+@*        *@
+@*       function stopDrag(e) { *@
+@*           isDragging = false; *@
+@*       } *@
+@*        *@
+@*       verticalGutter.addEventListener("pointerdown", function() { console.log("BBB"); }, false); *@
+@*       document.querySelector(".gutter-vertical").addEventListener("pointerdown", function() { console.log("CCC"); }, false) *@
+@*       document.documentElement.addEventListener('mousemove', doDrag, false); *@
+@*       document.documentElement.addEventListener('mouseup', stopDrag, false); *@
+@*   });     *@
+@* </script> *@
+</body>
+</html>

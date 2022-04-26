@@ -1,0 +1,51 @@
+﻿namespace LiveSharp.RuntimeTests.Tests
+{
+    public class GenericsTests : TestsBase
+    {
+        public void Test0()
+        {
+            var result = GenericContainer.SameBody<int?>(3);
+            
+            AssertEqual(result, "3");
+        }
+        
+        public void Test10()
+        {
+            var result = GenericContainer.BodyUpdate(2);
+            
+            AssertEqual(result, "2");
+        }
+        
+        public void Test11()
+        {
+            var result = GenericContainer.NewMethod(2);
+            
+            AssertEqual(result, "2");
+        }
+        
+        public void Test12()
+        {
+            var result = GenericContainer.BodyUpdate<int?>(2);
+            
+            AssertEqual(result, "2");
+        }
+
+        class GenericContainer
+        {
+            public static string SameBody<T>(T value)
+            {
+                return value.ToString();
+            }
+            
+            public static string BodyUpdate<T>(T value)
+            {
+                return value.ToString();
+            }
+            
+            public static string NewMethod<T>(T value) 
+            {
+                return value.ToString();
+            }
+        }
+    }
+}

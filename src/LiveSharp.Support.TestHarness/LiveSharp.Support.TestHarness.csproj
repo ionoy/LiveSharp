@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\LiveSharp.Workspace\LiveSharp.Workspace.csproj" />
+        <ProjectReference Include="..\LiveSharp.Runtime\LiveSharp.Runtime.csproj" />
+        <ProjectReference Include="..\LiveSharp\LiveSharp.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+        <PublishReadyToRun>false</PublishReadyToRun>
+        <RuntimeIdentifiers>win-x64;osx-x64</RuntimeIdentifiers>
+
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>liveblazor</ToolCommandName>
+        <IsPackable>true</IsPackable>
+        <PackageOutputPath>../../scripts/</PackageOutputPath>
+
+        <OutputPath>bin/$(Configuration)-LiveBlazor</OutputPath>
+        <PublishDir>$(OutputPath)</PublishDir>
+        
+        <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)-LiveBlazor\</IntermediateOutputPath>
+        <RootNamespace>LiveSharp.Server</RootNamespace>
+        <AssemblyName>LiveBlazor.Server</AssemblyName>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DefineConstants>TRACECOREAPP;LIVEBLAZOR;LIVESHARP_DISABLE</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DefineConstants>TRACECOREAPP;LIVEBLAZOR;COREAPP</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Update="wwwroot\css\site.css">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>        
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.31" />
+        <PackageReference Include="System.Reactive" Version="4.4.1" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Content Remove="Pages\LiveSharpServer\*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\LiveSharp.Shared\Api\*.cs" Link="*.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="wwwroot\assets\css\tailwind.min.css" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="localhost.livesharp.net.pfx">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="..\..\build\LiveSharp.dll" />
+    </ItemGroup>
+
+    <!--  <Import Project="..\..\build\livesharp-local.targets" />-->
+
+<!--    <Target Name="PostBuild" AfterTargets="PostBuildEvent">-->
+<!--        <Exec Command="npm run buildcss" />-->
+<!--    </Target>-->
+</Project>

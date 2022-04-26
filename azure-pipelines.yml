@@ -1,0 +1,25 @@
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - checkout: self
+    submodules: recursive
+  - task: UseDotNet@2
+    displayName: 'Install .net core 5.0'
+    inputs:
+      version: '5.0.x'
+  - script: |
+      export PATH="$PATH:/Users/runner/.dotnet/tools" 
+      export DOTNET_ROOT="/Users/runner/.dotnet"
+      export GH_TOKEN="2866b69449458630823e8e2ffbb1d92e8e6c6e34"
+      echo "Install LiveSharp Server"
+      dotnet tool install livesharp.server -g
+      echo "Building LiveSharp.sln"
+      dotnet build LiveSharp.Build.sln
+      dotnet build LiveSharp.sln      
+      dotnet build src\livesharp.runtime\livesharp.runtime.csproj
+  - task: VSTest@2
+    inputs: 
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: 'test\LiveSharp.BlazorTest\bin\Debug\net5.0\LiveSharp.BlazorTest.dll'

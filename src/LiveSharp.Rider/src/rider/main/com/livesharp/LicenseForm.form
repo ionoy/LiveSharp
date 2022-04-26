@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.livesharp.LicenseForm">
+  <grid id="27dc6" binding="myPanel" layout-manager="GridLayoutManager" row-count="10" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="5" left="5" bottom="5" right="5"/>
+    <constraints>
+      <xy x="14" y="20" width="628" height="515"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="f2ab4" class="javax.swing.JLabel" binding="lblStatus">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Trial period has expired"/>
+        </properties>
+      </component>
+      <component id="7c063" class="javax.swing.JLabel" binding="lblLimit">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font size="12"/>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="11"/>
+          <text value="LiveXAML is limited to projects with no more than 3 XAML files."/>
+        </properties>
+      </component>
+      <component id="b6f7d" class="javax.swing.JLabel" binding="lblStatus2">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="Active license detected"/>
+        </properties>
+      </component>
+      <component id="4dfd7" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font size="18"/>
+          <text value="Instructions"/>
+        </properties>
+      </component>
+      <component id="fcdcb" class="javax.swing.JButton" binding="btnPurchase">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Purchase"/>
+        </properties>
+      </component>
+      <component id="b5b16" class="javax.swing.JTextPane" default-binding="true">
+        <constraints>
+          <grid row="3" column="2" row-span="4" col-span="1" vsize-policy="6" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="130" height="50"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <enabled value="true"/>
+          <font/>
+          <opaque value="false"/>
+          <text value="1) Start debugging with an emulator or physical device&#10;2) Open any XAML file, modify and save it&#10;3) You should immediately see the updated UI in your application"/>
+        </properties>
+      </component>
+      <component id="e7b65" class="javax.swing.JCheckBox" binding="doNotShowStartupCheckBox">
+        <constraints>
+          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Do not show window at startup"/>
+        </properties>
+      </component>
+      <component id="b5b" class="javax.swing.JCheckBox" binding="updateEvenIfNotCheckBox" default-binding="true">
+        <constraints>
+          <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Update even if not debugging"/>
+        </properties>
+      </component>
+      <component id="e481e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font size="20" style="1"/>
+          <text value="Welcome to LiveSharp!"/>
+        </properties>
+      </component>
+      <component id="a9c4f" class="javax.swing.JTextPane">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="300" height="50"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <font size="14"/>
+          <opaque value="false"/>
+          <requestFocusEnabled value="true"/>
+          <text value="Welcome to LiveSharp Rider Plugin. After the initial installation you will be able to develop XAML files in your running application. No need for previewers or design-time data when you can change stuff on the fly!"/>
+          <verifyInputWhenFocusTarget value="true"/>
+        </properties>
+      </component>
+      <component id="3c442" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <icon value="icons/icon_128.png"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <grid id="6d66b" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="6" column="1" row-span="4" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-12866603"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="c4751" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="10" left="5" bottom="10" right="10"/>
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="350" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <background color="-12866603"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="21522" class="javax.swing.JTextPane">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="1" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-12866603"/>
+                  <foreground color="-1"/>
+                  <opaque value="false"/>
+                  <text value="This is needed if you activate on more than one computer. It will be generated after you first activate your account."/>
+                </properties>
+              </component>
+              <component id="a3bd" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="11"/>
+                  <foreground color="-1"/>
+                  <labelFor value="ce3aa"/>
+                  <text value="Email:"/>
+                </properties>
+              </component>
+              <component id="7801e" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="11"/>
+                  <foreground color="-1"/>
+                  <labelFor value="77197"/>
+                  <text value="Password:"/>
+                </properties>
+              </component>
+              <component id="9274f" class="javax.swing.JTextField" binding="txtEmail">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <margin top="2" left="5" bottom="2" right="5"/>
+                </properties>
+              </component>
+              <component id="3d714" class="javax.swing.JPasswordField" binding="txtPassword">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="799cb" class="javax.swing.JButton" binding="btnCopyKey">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <actionCommand value="CopyKey"/>
+                  <background color="-12866603"/>
+                  <margin top="0" left="5" bottom="0" right="5"/>
+                  <text value="Copy Access Key"/>
+                </properties>
+              </component>
+              <component id="6d9ba" class="javax.swing.JButton" binding="btnLoad">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <actionCommand value="LoadLicense"/>
+                  <background color="-12866603"/>
+                  <text value="Load License"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <component id="cfe70" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Settings"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

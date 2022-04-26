@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+
+
+
+
+namespace XamarinWorkbench
+{
+    public partial class MainPage : ContentPage
+    {
+        private const float DesiredFps = 25;
+        private DateTime _lastFrame = DateTime.Now;
+        private GameState _gameState;
+
+        public MainPage()
+        {
+            Build();
+        }
+
+        public void Build()
+        {
+            _gameState = new GameState();
+            
+            Content = new Label {
+                Text = "Hello, World!"
+            };
+
+            AppendFrame();
+        }
+
+        private void AppendFrame()
+        {
+            Device.PlatformServices.BeginInvokeOnMainThread(() =>
+            {
+                var frameTime = 1000 / DesiredFps;
+                var now = DateTime.Now;
+                
+                if (now - _lastFrame > TimeSpan.FromMilliseconds(frameTime)) {
+                    _lastFrame = now;
+                    
+                    ProcessFrame();
+                }
+                else {
+                    AppendFrame();
+                }
+            });
+        }
+
+        private void ProcessFrame()
+        {
+            
+            
+            AppendFrame();
+        }
+
+        class GameState
+        {
+            public int BubbleCounter { get; set; }
+
+            public bool NeedNewBubble => (DateTime.Now - _lastBubbleSpawn) > BubbleInterval;
+            public TimeSpan BubbleInterval => TimeSpan.FromSeconds(1 / (1 + BubbleCounter / 10.0f));
+            public List<Bubble> Bubbles { get; set; } = new List<Bubble>();
+
+            private DateTime _lastBubbleSpawn;
+            private Random _random = new Random();
+            public void SpawnNewBubble()
+            {
+                Bubbles.Add(new Bubble() {
+                    X = _random.NextDouble(),
+                    Y = _random.NextDouble()
+                });
+                _lastBubbleSpawn = DateTime.Now;
+            }
+        }
+
+        class Bubble
+        {
+            public double X { get; set; }
+            public double Y { get; set; }
+        }
+    }
+}

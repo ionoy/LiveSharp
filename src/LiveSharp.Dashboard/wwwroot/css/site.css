@@ -1,0 +1,218 @@
+:root {
+    --bg-color: #2a2a2a;
+    --surface-color: #393939;
+    --primary-color: #ff6768;
+    --secondary-color: #59c764;
+    --third-color: #7391d9;
+    --text-on-backgroud: #b1b1b1;
+    --text-on-surface: #e1e1e1;
+    --text-on-primary: #222222;
+    --text-on-secondary: #333333;
+}
+
+html, body {
+    font-family: "Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    height: 100vh;
+    color: var(--text-on-surface);
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+body {
+    background-color: var(--bg-color);
+    height: 100vh;
+}
+
+app {
+    display: block;
+    position: relative;
+}
+
+a {
+    color: #7ea8d5;
+}
+
+.header {
+    height: 22px;
+    color: var(--text-on-backgroud);
+    line-height: 22px;
+    font-size: 12px;
+}
+
+.footer {
+    height: 22px;
+    color: var(--text-on-backgroud);
+    line-height: 22px;
+    font-size: 12px;
+}
+
+.footer input[type=text] {
+    height: 10px;
+    width: 250px;
+    background-color: var(--bg-color);
+    color: var(--text-on-backgroud);
+    margin-right: 5px;
+}
+
+.footer input[type=checkbox] {
+    vertical-align: middle;
+}
+
+.footer span {
+    padding-right: 10px;
+}
+
+.main {
+    display: block;
+    position: relative;    
+}
+
+.panel-v {
+    display : block;
+    float: left;
+    width: calc(50% - 2px);
+    height: 100%;
+    overflow: auto;
+    position: relative;
+}
+
+.panel-h {
+    background-color: var(--surface-color);
+    display: block;
+    position: relative;
+    overflow: auto;
+    height: calc(50% - 2px);
+    width: 100%;
+}
+
+.gutter-horizontal {
+    /*cursor: ew-resize;*/
+    height: 100%;
+    float: left;
+    width: 4px;
+    position: relative;
+    background-color: var(--bg-color);
+}
+
+.gutter-horizontal:after {
+    content: ""
+}
+
+.gutter-vertical {
+    /*cursor: ns-resize;*/
+    height: 4px;
+    float: left;
+    width: 100%;
+    position: relative;
+    background-color: var(--bg-color);
+}
+
+.gutter-vertical:after {
+    content: ""
+}
+
+.box {
+    padding: 0 20px 20px 20px;
+}
+
+.box > h3 {
+    color: var(--text-on-backgroud);
+    font-size: 1.2em;
+    font-weight: normal;
+    text-align: right;
+    user-select: none;
+    margin-block-start: 10px;
+}
+
+p {
+    margin: 3px 0;
+}
+
+.debug-messages {
+}
+
+.debug-messages .debug-message {
+    padding: 0px;
+    margin: 0px;
+}
+
+.debug-messages .method-container, .debug-messages .prefix {
+    color: var(--primary-color);
+}
+
+.log-messages {
+}
+
+.log-messages .log-message {
+    padding: 0px;
+    margin: 0px;
+}
+
+.inspector-instance {
+    margin-bottom: 10px;
+}
+
+.inspector-instance .instance-type {
+    color: var(--primary-color);
+}
+
+.inspector-instance .member {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.inspector-instance .member-name {
+    color: var(--third-color);
+    padding-right: 10px;
+}
+
+.diagnostics-nav {
+    margin: 0 0 0 -20px;
+    overflow: hidden;
+}
+
+.diagnostics-nav a {
+    float: left;
+    display: block;
+    color: #c9d7da;
+    text-align: center;
+    padding: 5px 7px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.diagnostics-nav a:hover, .diagnostics-nav a.selected:hover {
+    color: #e8eff1;
+    background-color: #4f6379;
+}
+
+.diagnostics-nav a.selected {
+    color: #c9d7da;
+    background-color: #354353;
+}
+
+.diagnostic-panel {
+    margin-top: 10px;
+}
+
+.news-box h2 {
+    font-size: 18px;
+}
+
+.primary-color {
+    color: var(--primary-color);
+}
+
+.secondary-color {
+    color: var(--secondary-color);
+}
+
+.third-color {
+    color: var(--third-color);
+}
+
+.float-right {
+    display: block;
+    float: right;
+}

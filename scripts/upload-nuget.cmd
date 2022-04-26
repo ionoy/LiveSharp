@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Bypass -File "upload-nugets.ps1"

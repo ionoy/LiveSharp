@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.6" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991640" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\ItemDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\ItemsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\MenuPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\NewItemPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+<!--  <ItemGroup>-->
+<!--    <PackageReference Include="LiveSharp" Version="1.1.37" />-->
+<!--  </ItemGroup>-->
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\LiveSharp.Support.XamarinForms\LiveSharp.Support.XamarinForms.csproj" />
+      <ProjectReference Include="..\..\..\src\LiveSharp.Runtime\LiveSharp.Runtime.csproj" />
+    </ItemGroup> 
+
+  <ItemGroup>
+    <Reference Include="LiveSharp.Interfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fe18a89f0002ab01">
+      <HintPath>..\..\..\build\LiveSharp.Interfaces.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="..\..\..\build\LiveSharp-noruntime.targets" />
+</Project>

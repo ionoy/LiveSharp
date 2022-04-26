@@ -1,0 +1,68 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="LiveSharp.Build.dll" TaskName="LiveSharp.Build.LiveSharpTask" />
+  <UsingTask AssemblyFile="LiveSharp.Build.dll" TaskName="LiveSharp.Build.PlatformCheckTask" />
+    
+  <Target Name="InjectLiveSharpAssembly"
+          AfterTargets="PrepareForBuild" BeforeTargets="ResolveReferences"
+          Condition="!$(DefineConstants.Contains('LIVESHARP_DISABLE')) AND !$(DefineConstants.Contains('LIVEBLAZOR_DISABLE'))">
+    <Message Condition="$(Configuration) == 'Release' AND !$(DefineConstants.Contains('LIVEBLAZOR_DISABLE'))" Text="You might want to disable LiveBlazor for release builds. Use `LIVEBLAZOR_DISABLE` compilation symbol to do that." />
+
+    <PropertyGroup Condition="@(Content) != ''">
+      <_LiveSharpContent>@(Content)</_LiveSharpContent>
+    </PropertyGroup>
+    <PropertyGroup Condition="@(Content) == ''">
+      <_LiveSharpContent>''</_LiveSharpContent>
+    </PropertyGroup>
+    <PropertyGroup Condition="@(PackageReference) != ''">
+      <_LiveSharpPackageReferences>@(PackageReference)</_LiveSharpPackageReferences>
+    </PropertyGroup>
+    <PropertyGroup Condition="@(PackageReference) == ''">
+      <_LiveSharpPackageReferences>''</_LiveSharpPackageReferences>
+    </PropertyGroup>
+
+    <PlatformCheckTask ProjectCapability="@(ProjectCapability)"
+                       PackageReferences="$(_LiveSharpPackageReferences)"
+                       ProjectDir="$(ProjectDir)"
+                       MSBuildThisFileDirectory="$(MSBuildThisFileDirectory)"
+                       Content="$(_LiveSharpContent)">
+      <Output TaskParameter="Platform" PropertyName="_LiveSharpPlatform" />
+    </PlatformCheckTask>
+        
+    <ItemGroup Condition="$(_LiveSharpPlatform.Contains('BlazorWASM'))">
+      <Reference Include="$(MSBuildThisFileDirectory)LiveBlazor.WASM.dll" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(_LiveSharpPlatform.Contains('BlazorServer')) AND !$(_LiveSharpPlatform.Contains('BlazorWASM'))">
+      <Reference Include="$(MSBuildThisFileDirectory)LiveBlazor.dll" />
+      <None Include="$(MSBuildThisFileDirectory)LiveBlazor.WASM.dll" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Reference Include="$(MSBuildThisFileDirectory)LiveSharp.Runtime.dll" />
+    </ItemGroup>    
+  </Target>
+
+  <Target Name="LiveSharpTask"
+          AfterTargets="AfterCompile"
+          Condition="Exists(@(IntermediateAssembly)) AND !$(DefineConstants.Contains('LIVESHARP_DISABLE')) AND Exists('$(MSBuildThisFileDirectory)LiveSharp.Runtime.dll')">
+    <LiveSharpTask AssemblyPath="@(IntermediateAssembly)"
+                   IntermediateOutputPath="$(IntermediateOutputPath)"
+                   References="@(ReferencePath)"
+                   AssemblyName="$(AssemblyName)"
+                   Sources="@(Compile)"
+                   Content="@(Content);@(None)"
+                   ProjectDir="$(ProjectDir)"
+                   SolutionPath="$(SolutionPath)"
+                   ProjectName="$(ProjectName)"
+                   NuGetPackagePath="$(MSBuildThisFileDirectory)"
+                   DefineConstants="$(DefineConstants)"
+                   LangVersion="$(LangVersion)"
+                   EmbeddedResource="@(EmbeddedResource)"
+                   RazorComponentWithTargetPath="@(RazorComponentWithTargetPath)"
+                   RootNamespace="$(RootNamespace)"
+                   ProjectReferences="@(ProjectReference)"
+                   Analyzers="@(Analyzer)"
+                   AnalyzerConfigFiles="@(EditorConfigFiles)">
+    </LiveSharpTask>
+  </Target>
+</Project>

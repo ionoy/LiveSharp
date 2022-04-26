@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\LiveSharp.Support.Uno\UnoUpdateHandler.cs" Link="UnoUpdateHandler.cs" />
+        <Compile Include="..\LiveSharp.Support.Uno\WeakReferenceList.cs" Link="WeakReferenceList.cs" />
+        <Compile Include="..\LiveSharp.Support.Uno\Infrastructure\ReflectionExtensions.cs" Link="Infrastructure\ReflectionExtensions.cs" />
+        <Compile Include="..\LiveSharp.Support.Uno\Infrastructure\TypeExtensions.cs" Link="Infrastructure\TypeExtensions.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LiveSharp.Runtime\LiveSharp.Runtime.csproj" />
+      <ProjectReference Include="..\LiveSharp\LiveSharp.csproj" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)..\..\build" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)..\..\build" />
+    </Target>
+
+</Project>

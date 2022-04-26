@@ -1,0 +1,655 @@
+﻿@page "/account/klanten"
+@using System.ComponentModel
+@using Models.Account
+
+<style> .k-grouping-header { display: none; } .k-grid tbody tr { line-height: 28px; } .k-grid tbody td { padding: 8px; } </style>
+
+<div class="mx-auto mt-4 px-6">
+    <div class="mb-3">
+        <dl>
+            <div class="sm:grid sm:grid-cols-8 sm:gap-4 ">
+                <dt class="text-sm leading-5 font-medium text-gray-500 self-center">
+                    Klanten set4
+                </dt>
+                <dd class="text-sm leading-5 text-gray-700 sm:mt-0 sm:col-span-1">
+                    <select id="filterCustomers" class="form-control filter-status bg-gray-200 border-t-0 border-l-0 border-r-0 border-b-4" name="select-status">
+                        <option value="2">Eigen klanten</option>
+                        <option value="1">Alle klanten</option>
+                    </select>
+                </dd>
+            </div>
+
+            <div class="sm:grid sm:grid-cols-8 sm:gap-4 ">
+                <dt class="mt-4 pt-1 text-sm leading-5 font-medium text-gray-500 self-center">
+                    Kalenderjaar
+                </dt>
+                <dd class="text-sm leading-5 text-gray-700 sm:mt-0 sm:col-span-2">
+                    <div class="sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start">
+                        <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                            <div class="hidden sm:block">
+                                <div class="flex">
+                                    @{
+                                        int y = 0;
+                                        foreach (var year in years) {
+                                            if (y == 3) {
+                                                if (!showAllYears) {
+                                                    <button type="button" class="mr-3 @btnInactive" @onclick="toggleOnShowAllYears">
+                                                        Alle
+                                                    </button>
+
+                                                    break;
+                                                }
+                                            }
+
+                                            <button type="button" class="mr-3 @btnStyles[y]" @onclick="@(c => btnYear(@year))">
+                                                @year
+                                            </button>
+
+                                            y++;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="row mt-4 pt-3 mb-2">
+        <div class="col-md-12">
+            <div class="search-group">
+                <input id="filterText" type="text" class="form-control input m-b-xs bg-gray-200 border-t-0 border-l-0 border-r-0 border-b-4 focus:shadow-outline-gray" autofocus placeholder="Zoek opdracht">
+            </div>
+        </div>
+    </div>
+    test
+    <div class="flex flex-col">
+        <div class="py-2 mb-3 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+            <div class="align-middle inline-block min-w-full overflow-hidden sm:rounded-lg border-b border-gray-200">
+                <TelerikGrid Data=@GridData
+                             Groupable="true"
+                             Pageable=true PageSize=@PageSize
+                             Sortable=true>
+                    <GridColumns>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.CustomerStatus) Title="Status" Width="85px">
+                            <Template>
+                                @{
+                                    var customer = new CustomerGridView() as Models.Account.CustomerGridView;
+                                    if (customer.CustomerStatus == Enums.Status.Customer.Active) {
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-200 text-green-800">
+                                            Actief
+                                        </span>
+                                    }
+                                    else if (customer.CustomerStatus == Enums.Status.Customer.Deactivated) {
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-400 text-gray-800">
+                                            Inactief
+                                        </span>
+                                    }
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.CustomerName) Groupable="false" Width="1px">
+                            <Template>&nbsp;</Template>
+                            <GroupHeaderTemplate>
+                                @{
+                                    <a href="@string.Format("/account/klanten/1")">
+                                        <p class="text-indigo-600">@nameof(CustomerGridView.CompanyName)</p>
+                                    </a>
+                                }
+                            </GroupHeaderTemplate>
+                        </GridColumn>
+
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.CompanyName) Title="Bedrijfsnaam" Groupable="false">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}", (new CustomerGridView() as Models.Account.CustomerGridView).CompanyID)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).CompanyName)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.Period1Toegekend) Groupable="false" Title=@string.Format("{0}-1", activeYear) Width="75px">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}/beschikkingen/{1}", ((new CustomerGridView() as Models.Account.CustomerGridView).CompanyID), activeYear)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).Period1Toegekend)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.Period1Realisatie) Groupable="false" Title=@string.Format("{0}-1", activeYear) Width="75px">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}/realisaties/{1}", ((new CustomerGridView() as Models.Account.CustomerGridView).CompanyID), activeYear)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).Period1Realisatie)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.Period2Toegekend) Groupable="false" Title=@string.Format("{0}-2", activeYear) Width="75px">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}/beschikkingen/{1}", ((new CustomerGridView() as Models.Account.CustomerGridView).CompanyID), activeYear)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).Period2Toegekend)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.Period2Realisatie) Groupable="false" Title="@string.Format("{0}-2", activeYear)" Width="75px">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}/realisaties/{1}", ((new CustomerGridView() as Models.Account.CustomerGridView).CompanyID), activeYear)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).Period2Realisatie)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.Period3Toegekend) Groupable="false" Title=@string.Format("{0}-3", activeYear) Width="75px">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}/beschikkingen/{1}", ((new CustomerGridView() as Models.Account.CustomerGridView).CompanyID), activeYear)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).Period3Toegekend)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field=@nameof(Models.Account.CustomerGridView.Period3Realisatie) Groupable="false" Title=@string.Format("{0}-3", activeYear) Width="75px">
+                            <Template>
+                                <a href="@string.Format("/account/bedrijven/{0}/realisaties/{1}", ((new CustomerGridView() as Models.Account.CustomerGridView).CompanyID), activeYear)">
+                                    <p class="text-indigo-600">@string.Format("{0}", (new CustomerGridView() as Models.Account.CustomerGridView).Period3Realisatie)</p>
+                                </a>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                </TelerikGrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    #region Year buttons
+
+    bool showAllYears = false;
+    int activeYear = DateTime.Now.Year;
+    int[] years = new int[] {2020, 2019, 2018, 2017};
+
+    string btnActive = "relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-green focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out";
+    string btnInactive = "relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-gray-600 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out";
+
+    List<string> btnStyles;
+
+    private void InitializeStyles()
+    {
+        btnStyles = new List<string>();
+
+        foreach (var year in years) {
+            btnStyles.Add(btnInactive);
+        }
+    }
+
+    private void toggleOnShowAllYears()
+    {
+        showAllYears = true;
+    }
+
+    #endregion
+
+    int PageSize = 6;
+
+    public List<List<Models.Account.CustomerGridView>> AllYearsData { get; set; }
+    public List<Models.Account.CustomerGridView> GridData { get; set; }
+    public List<Models.Medew.Company> Companies { get; set; }
+    public List<Models.Account.CustomerGridView> CompanyList { get; set; }
+
+    async Task OnStateInitHandler(GridStateEventArgs<Models.Account.CustomerGridView> args)
+    {
+        GridState<Models.Account.CustomerGridView> desiredState = new GridState<Models.Account.CustomerGridView>() {
+            GroupDescriptors = new List<GroupDescriptor>() {
+                new GroupDescriptor() {
+                    Member = "CustomerName",
+                    DisplayContent = "Klantnaam", // this is how to set the string for the group indicator
+                    MemberType = typeof(string),
+                    SortDirection = ListSortDirection.Descending
+                }
+            }
+        };
+
+    // this is how to pass the state object you generate to the grid in the OnStateInit event
+        args.GridState = desiredState;
+    }
+
+    public class GroupDescriptor
+    {
+        public string Member { get; set; }
+        public string DisplayContent { get; set; }
+        public Type MemberType { get; set; }
+        public ListSortDirection SortDirection { get; set; }
+    }
+
+    public class GridState<T>
+    {
+        public List<GroupDescriptor> GroupDescriptors { get; set; }
+        public List<SortDescriptor> SortDescriptors { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        InitializeStyles();
+
+        InitializeDataSet();
+
+        SetActiveButton(activeYear);
+    }
+
+    private void InitializeDataSet()
+    {
+    #region Companies
+
+        Companies = new List<Models.Medew.Company>();
+        Companies.Add(new Models.Medew.Company {
+            CompanyID = 1,
+            Name = "Jansen R&D BV",
+        });
+        Companies.Add(new Models.Medew.Company {
+            CompanyID = 2,
+            Name = "Jansen Beheer BV",
+        });
+
+    #endregion
+
+    #region Companies
+
+        CompanyList = new List<Models.Account.CustomerGridView>();
+
+    #region 2020
+
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 1,
+            CustomerName = "De Jansen Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 1,
+            CompanyName = "Jansen R&D BV",
+            Period1Realisatie = 1296,
+            Period1Toegekend = 1000,
+            Period2Realisatie = 92382,
+            Period2Toegekend = 100000,
+            Period3Realisatie = 9211,
+            Period3Toegekend = 10000
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 1,
+            CustomerName = "De Jansen Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 2,
+            CompanyName = "Jansen Beheer BV",
+            Period1Realisatie = 117,
+            Period1Toegekend = 100,
+            Period2Realisatie = 172,
+            Period2Toegekend = 200,
+            Period3Realisatie = 89,
+            Period3Toegekend = 100
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 3,
+            CompanyName = "Pieterson BV",
+            Period1Realisatie = 95,
+            Period1Toegekend = 100,
+            Period2Realisatie = 123,
+            Period2Toegekend = 100,
+            Period3Realisatie = 99,
+            Period3Toegekend = 200
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 4,
+            CompanyName = "Pieterson Holding BV",
+            Period1Realisatie = 481,
+            Period1Toegekend = 500,
+            Period2Realisatie = 349,
+            Period2Toegekend = 400,
+            Period3Realisatie = 1024,
+            Period3Toegekend = 100
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 3,
+            CustomerName = "DAN Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 5,
+            CompanyName = "Dans R&D BV",
+            Period1Realisatie = 940,
+            Period1Toegekend = 1000,
+            Period2Realisatie = 821,
+            Period2Toegekend = 700,
+            Period3Realisatie = 726,
+            Period3Toegekend = 700
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 3,
+            CustomerName = "Dan Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 6,
+            CompanyName = "Dans Beheer BV",
+            Period1Realisatie = 195,
+            Period1Toegekend = 200,
+            Period2Realisatie = 192,
+            Period2Toegekend = 200,
+            Period3Realisatie = 271,
+            Period3Toegekend = 250
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 3,
+            CustomerName = "Dan Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 7,
+            CompanyName = "Dans Construction BV",
+            Period1Realisatie = 75,
+            Period1Toegekend = 100,
+            Period2Realisatie = 153,
+            Period2Toegekend = 300,
+            Period3Realisatie = 762,
+            Period3Toegekend = 900
+        });
+
+    #endregion
+
+    #region 2019
+
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 1,
+            CustomerName = "De Jansen Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 1,
+            CompanyName = "Jansen R&D BV",
+            Period1Realisatie = 95,
+            Period1Toegekend = 125,
+            Period2Realisatie = 127,
+            Period2Toegekend = 100,
+            Period3Realisatie = 194,
+            Period3Toegekend = 200
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 1,
+            CustomerName = "De Jansen Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 2,
+            CompanyName = "Jansen Beheer BV",
+            Period1Realisatie = 402,
+            Period1Toegekend = 400,
+            Period2Realisatie = 125,
+            Period2Toegekend = 125,
+            Period3Realisatie = 225,
+            Period3Toegekend = 225
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 3,
+            CompanyName = "Pieterson BV",
+            Period1Realisatie = 102,
+            Period1Toegekend = 100,
+            Period2Realisatie = 210,
+            Period2Toegekend = 200,
+            Period3Realisatie = 150,
+            Period3Toegekend = 150
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 4,
+            CompanyName = "Pieterson Holding BV",
+            Period1Realisatie = 114,
+            Period1Toegekend = 115,
+            Period2Realisatie = 201,
+            Period2Toegekend = 210,
+            Period3Realisatie = 105,
+            Period3Toegekend = 100,
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 3,
+            CustomerName = "DAN Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 5,
+            CompanyName = "Dans R&D BV",
+            Period1Realisatie = 174,
+            Period1Toegekend = 150,
+            Period2Realisatie = 105,
+            Period2Toegekend = 95,
+            Period3Realisatie = 120,
+            Period3Toegekend = 125
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 3,
+            CustomerName = "Dan Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 6,
+            CompanyName = "Dans Beheer BV",
+            Period1Realisatie = 231,
+            Period1Toegekend = 230,
+            Period2Realisatie = 120,
+            Period2Toegekend = 120,
+            Period3Realisatie = 285,
+            Period3Toegekend = 280,
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 3,
+            CustomerName = "Dan Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 7,
+            CompanyName = "Dans Construction BV",
+            Period1Realisatie = 271,
+            Period1Toegekend = 270,
+            Period2Realisatie = 157,
+            Period2Toegekend = 150,
+            Period3Realisatie = 276,
+            Period3Toegekend = 280
+        });
+
+    #endregion
+
+    #region 2018
+
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 1,
+            CustomerName = "De Jansen Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 1,
+            CompanyName = "Jansen R&D BV",
+            Period1Realisatie = 256,
+            Period1Toegekend = 260,
+            Period2Realisatie = 132,
+            Period2Toegekend = 130,
+            Period3Realisatie = 100,
+            Period3Toegekend = 100
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 3,
+            CompanyName = "Pieterson BV",
+            Period1Realisatie = 182,
+            Period1Toegekend = 180,
+            Period2Realisatie = 143,
+            Period2Toegekend = 150,
+            Period3Realisatie = 172,
+            Period3Toegekend = 180
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 4,
+            CompanyName = "Pieterson Holding BV",
+            Period1Realisatie = 242,
+            Period1Toegekend = 240,
+            Period2Realisatie = 124,
+            Period2Toegekend = 130,
+            Period3Realisatie = 321,
+            Period3Toegekend = 320,
+        });
+
+    #endregion
+
+    #region 2017
+
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 1,
+            CustomerName = "De Jansen Groep",
+            CustomerStatus = Enums.Status.Customer.Active,
+            CompanyID = 1,
+            CompanyName = "Jansen R&D BV",
+            Period1Realisatie = 122,
+            Period1Toegekend = 125,
+            Period2Realisatie = 156,
+            Period2Toegekend = 150,
+            Period3Realisatie = 184,
+            Period3Toegekend = 180
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 3,
+            CompanyName = "Pieterson BV",
+            Period1Realisatie = 321,
+            Period1Toegekend = 320,
+            Period2Realisatie = 126,
+            Period2Toegekend = 120,
+            Period3Realisatie = 244,
+            Period3Toegekend = 250
+        });
+        CompanyList.Add(new Models.Account.CustomerGridView {
+            CustomerID = 2,
+            CustomerName = "Pietersen Groep",
+            CustomerStatus = Enums.Status.Customer.Deactivated,
+            CompanyID = 4,
+            CompanyName = "Pieterson Holding BV",
+            Period1Realisatie = 184,
+            Period1Toegekend = 190,
+            Period2Realisatie = 173,
+            Period2Toegekend = 170,
+            Period3Realisatie = 121,
+            Period3Toegekend = 120,
+        });
+
+    #endregion
+
+    #endregion
+
+    #region DataSet
+
+        AllYearsData = new List<List<Models.Account.CustomerGridView>>();
+
+        var year2020 = GetData(0, 5);
+        var year2019 = GetData(5, 7);
+        var year2018 = GetData(7, 10);
+        var year2017 = GetData(10, 11);
+
+        AllYearsData.Add(year2020);
+        AllYearsData.Add(year2019);
+        AllYearsData.Add(year2018);
+        AllYearsData.Add(year2017);
+
+    #endregion
+    }
+
+    public string Name { get; set; }
+
+    private List<Models.Account.CustomerGridView> GetData(int fromIndex, int tillIndex)
+    {
+        var dataSet = new List<Models.Account.CustomerGridView>();
+
+        for (int i = fromIndex; i < tillIndex; i++) {
+            var dataPoint = new Models.Account.CustomerGridView {
+                CustomerName = CompanyList[i].CustomerName,
+                CustomerID = CompanyList[i].CustomerID,
+                CustomerStatus = CompanyList[i].CustomerStatus,
+                CompanyID = CompanyList[i].CompanyID,
+                CompanyName = CompanyList[i].CompanyName,
+                Period1Realisatie = CompanyList[i].Period1Realisatie,
+                Period1Toegekend = CompanyList[i].Period1Toegekend,
+                Period2Realisatie = CompanyList[i].Period2Realisatie,
+                Period2Toegekend = CompanyList[i].Period2Toegekend,
+                Period3Realisatie = CompanyList[i].Period3Realisatie,
+                Period3Toegekend = CompanyList[i].Period3Toegekend
+            };
+
+            dataSet.Add(dataPoint);
+        }
+
+        return dataSet;
+    }
+
+    public TelerikGrid<Models.Account.CustomerGridView> Grid { get; set; }
+
+    public class TelerikGrid<T>
+    {
+        public async Task SetState(GridState<CustomerGridView> desiredState)
+        {
+            
+        }
+    }
+
+    async Task SetGridSort()
+    {
+        GridState<Models.Account.CustomerGridView> desiredState = new GridState<Models.Account.CustomerGridView>() {
+            SortDescriptors = new List<SortDescriptor>() {
+                new SortDescriptor {Member = "CompanyName", SortDirection = ListSortDirection.Descending}
+            }
+        };
+
+        await Grid.SetState(desiredState);
+    }
+
+    public class SortDescriptor
+    {
+        public string Member { get; set; }
+        public ListSortDirection SortDirection { get; set; }
+    }
+
+    private void SetActiveButton(int year)
+    {
+        activeYear = year;
+
+        SetAllButtonsToInactive();
+
+        var index = GetIndex(year);
+        btnStyles[index] = btnActive;
+
+        SetGridData(year);
+    }
+
+    private void SetAllButtonsToInactive()
+    {
+        int i = 0;
+        foreach (var year in years) {
+            btnStyles[i] = btnInactive;
+            i++;
+        }
+    }
+
+    private void btnYear(int year)
+    {
+        SetActiveButton(year);
+        SetGridData(year);
+    }
+
+    private int GetIndex(int year)
+    {
+        var index = Array.IndexOf(years, year);
+        return index;
+    }
+
+    private void SetGridData(int year)
+    {
+        var index = GetIndex(year);
+        GridData = AllYearsData[index];
+    }
+
+    public class GridStateEventArgs<T> : EventArgs
+    {
+        public GridState<CustomerGridView> GridState { get; set; }
+    }
+
+}

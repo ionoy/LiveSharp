@@ -1,0 +1,116 @@
+﻿@using LiveSharp.Server.Services
+@using System.Reactive.Linq
+
+@inject LoggingService LoggingService
+@inject IJSRuntime JsRuntime
+
+<div class="p-2 text-sm flex bg-gray-800 shadow-lg">
+
+  <svg @onclick="CopyLogsToClipboard" xmlns="http://www.w3.org/2000/svg" title="Copy to clipboard" class="h-4 w-4 ml-2 cursor-pointer hover:opacity-75" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+  </svg>
+  @* *@
+  @* <h2 class="text-gray-300 ml-2">Diagnostics</h2> *@
+
+  <svg @onclick="() => IsDescending = !IsDescending" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto cursor-pointer hover:opacity-75" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+  </svg>
+
+  @if (CurrentPanelState == PanelState.Maximized) {
+    <svg @onclick="() => CurrentPanelState = PanelState.Normal" class="h-5 w-5 ml-auto mr-1 cursor-pointer hover:opacity-75" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+    </svg>
+  } else {
+    <svg @onclick="() => CurrentPanelState = PanelState.Maximized" class="w-5 h-5 ml-auto mr-1 cursor-pointer hover:opacity-75" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"/>
+    </svg>
+  }
+
+  @if (CurrentPanelState != PanelState.Minimized) {
+    <svg @onclick="() => CurrentPanelState = PanelState.Minimized" class="w-5 h-5 cursor-pointer hover:opacity-75" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"/>
+    </svg>
+  }
+</div>
+
+<div class="@(PanelStateClasses) overflow-y-auto bg-gray-600 px-2 ">
+  <div class="text-xs text-gray-300">
+    @foreach (var log in LogItems) {
+    <div class="@(LogSourceToColor(log.LogSource))">
+      @log.Text
+      @if (log.LogSource != LogSource.Server) {
+        @($" ({log.ProjectId})")
+      } 
+    </div>
+    }
+  </div>
+</div>
+
+@code {
+  private readonly List<LogItem> _logItems = new();
+  private PanelState CurrentPanelState = PanelState.Normal; 
+  private bool IsDescending = false;
+  private IEnumerable<LogItem> LogItems => IsDescending ? _logItems : Enumerable.Reverse(_logItems);
+  
+  private string PanelStateClasses {
+    get {
+      if (CurrentPanelState == PanelState.Maximized)
+        return "max-h-screen h-screen";
+
+      if (CurrentPanelState == PanelState.Normal)
+        return "max-h-32 h-32";
+
+      return "max-h-0 h-0";
+    }
+  }
+
+  enum PanelState { Maximized, Normal, Minimized }
+
+  protected override void OnInitialized()
+  {
+    LoggingService
+      .RuntimeLogs
+      .Buffer(TimeSpan.FromMilliseconds(50))
+      .Subscribe(LogsReceived);
+        
+    LoggingService
+      .WorkspaceLogs
+      .Buffer(TimeSpan.FromMilliseconds(50))
+      .Subscribe(LogsReceived);
+        
+    LoggingService
+      .ServerLogs
+      .Buffer(TimeSpan.FromMilliseconds(50))
+      .Subscribe(LogsReceived);
+  }
+
+  void LogsReceived(IList<LogItem> logs)
+  {
+    InvokeAsync(() => {
+      foreach (var message in logs) {
+        _logItems.Add(message);
+      }
+        
+      if (_logItems.Count > 128)
+        _logItems.RemoveRange(127, _logItems.Count - 128);
+      StateHasChanged();
+    });
+  }
+
+  string LogSourceToColor(LogSource source)
+  {
+    if (source == LogSource.Runtime)
+      return "text-blue-500";
+    
+    if (source == LogSource.Workspace)
+      return "text-yellow-500";
+
+    return "";
+  }
+  
+  private void CopyLogsToClipboard()
+  {
+    var logContent = string.Join(Environment.NewLine, LogItems.Select(i => i.Text));
+    JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", logContent);
+  }
+}

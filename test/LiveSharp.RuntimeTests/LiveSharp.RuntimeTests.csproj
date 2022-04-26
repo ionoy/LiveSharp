@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.1.0-3.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0-3.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.1.0-3.final" />
+<!--    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.1.0" />-->
+    <PackageReference Include="xamarin.forms" Version="4.7.0.968" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LiveSharp.Runtime\LiveSharp.Runtime.csproj" />
+    <ProjectReference Include="..\..\src\LiveSharp.Workspace\LiveSharp.Workspace.csproj" />
+  </ItemGroup>
+
+  <!-- We need this for building project info, but we don't need the inject. This needs to be fixed -->
+  <Import Project="..\..\build\LiveSharp-noruntime.targets" />
+</Project>

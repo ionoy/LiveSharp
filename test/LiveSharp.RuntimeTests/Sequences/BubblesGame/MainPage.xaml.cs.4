@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+
+
+
+
+namespace XamarinWorkbench
+{
+    public partial class MainPage : ContentPage
+    {
+        private const float DesiredFps = 25;
+        private DateTime _lastFrame = DateTime.Now;
+        
+        public MainPage()
+        {
+            Build();
+        }
+
+        public void Build()
+        {
+            Content = new Label {
+                Text = "Hello, World!"
+            };
+
+            AppendFrame();
+        }
+
+        private void AppendFrame()
+        {
+            Device.PlatformServices.BeginInvokeOnMainThread(() =>
+            {
+                var frameTime = 1000 / DesiredFps;
+
+                if (DateTime.Now - _lastFrame > TimeSpan.FromMilliseconds(frameTime)) {
+                    ProcessFrame();
+                }
+            });
+        }
+
+        private void ProcessFrame()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

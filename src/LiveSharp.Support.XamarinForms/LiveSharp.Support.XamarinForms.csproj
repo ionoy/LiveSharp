@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xamarin.forms" Version="4.4.0.991640" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiveSharp.Runtime\LiveSharp.Runtime.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)..\..\build" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)..\..\build" />
+  </Target>
+
+</Project>

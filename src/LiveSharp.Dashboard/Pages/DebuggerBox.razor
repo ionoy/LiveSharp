@@ -1,0 +1,73 @@
+﻿@using LiveSharp.Dashboard.Services
+@using HtmlAgilityPack
+@using LiveSharp.Dashboard.Models
+@using LiveSharp.Shared.Debugging
+@inject DebuggingService DebuggingService
+@inject ILogger Logger 
+
+<div class="box news-box">
+    @if (_invocation != null) {
+        foreach (var debugEvent in _invocation.DebugEvents) {
+            if (debugEvent is StartDebugEvent sde) {
+                <div>Invocation started at @DateTime.FromBinary(sde.Timestamp).ToString("HH:mm:ss fff")</div>
+                if (!string.IsNullOrWhiteSpace(sde.ParameterNames)) {
+                    <div>Parameters:</div>
+                    var split = sde.ParameterNames.Split(',');
+                    for (var i = 0; i < split.Length; i++) {
+                        var parameterName = split[i];
+                        var argument = sde.Arguments[i];
+                                    
+                        <div>@parameterName: @argument</div>
+                    }
+                }
+            } else if (debugEvent is AssignDebugEvent ade) {
+                <div>@_invocation.GetVariableName(ade.SlotIndex) = @ade.Value</div>
+            } else if (debugEvent is ReturnDebugEvent rde) {
+                <div>Method returned</div>
+                if (_invocation.StartEvent.HasReturnValue) {
+                    <div>@rde.ReturnValue</div>
+                }
+            }
+        }
+    } else {
+        <h3>News</h3>
+
+        @((MarkupString) _news)
+    }
+</div>
+
+@code {
+    readonly List<string> _messages = new();
+    string _news;
+    private DebuggerTreeInvocationViewModel _invocation;
+
+    protected override async Task OnInitializedAsync()
+    {
+        DebuggingService.InvocationModelChanged += (_, model) => {
+            _invocation = model;
+            InvokeAsync(StateHasChanged);
+        };
+        
+        LoadNews();
+        
+        await base.OnInitializedAsync();
+    }
+
+    private void LoadNews()
+    {
+        Task.Run(async () => {
+            try {
+                var web = new HtmlWeb();
+                var htmlDoc = await web.LoadFromWebAsync(@"https://www.livesharp.net/news/");
+                var node = htmlDoc.DocumentNode.SelectSingleNode("//main");
+            
+                _news = node.InnerHtml;
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception e) {
+                Logger.LogWarning("Unable to load LiveSharp news from https://www.livesharp.net/news/" + e.Message);
+            }
+        });
+    }
+}

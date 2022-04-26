@@ -1,0 +1,330 @@
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LiveSharp.RuntimeTests
+{
+    public partial class NewMembers : TestsBase
+    {
+        public event EventHandler<string> TestEvent;
+        private bool _eventHandlerCalled = false;
+
+        public bool _field;
+        public bool Property { get; set; }
+        public bool Method() => true;
+        public void MethodVoid() {}
+        public static bool StaticField;
+        public static bool StaticProperty { get; set; }
+        public static bool StaticMethod() => true;
+        public static void StaticMethodVoid() {}
+        
+        private const double _newDoubleValue = 7.0;
+        private static int _newStaticValue = 5;
+        public bool _fieldWithInit = true;
+        public bool PropertyWithInit { get; } = true;
+        public static bool StaticFieldWithInit = true;
+        public static bool StaticPropertyWithInit { get; } = true;
+        public static bool StaticPropertyWithBody => _newStaticValue == 5;
+        public int PropertyWithSetter { set { _propertyWithSetter = value; } }
+        public int _propertyWithSetter = 0;
+
+        class NewType
+        {
+            public bool _field;
+            public bool Property { get; set; }
+            public bool Method() => true;
+            public void MethodVoid() {}
+            public static bool StaticField;
+            public static bool StaticProperty { get; set; }
+            public static bool StaticMethod() => true;
+            public static void StaticMethodVoid() {}
+
+            private int _newValue = 5;
+            private static int _newStaticValue = 5;
+            public bool _fieldWithInit = true;
+            public bool PropertyWithInit { get; } = true;
+            public bool PropertyWithBody => _newValue == 5;
+            public static bool StaticFieldWithInit = true;
+            public static bool StaticPropertyWithInit { get; } = true;
+            public static bool StaticPropertyWithBody => _newStaticValue == 5;
+        }
+        
+        public void Test10()
+        {
+            _field = true;
+            Assert(_field);
+        }
+        
+        public void Test20()
+        {
+            Property = true;
+            Assert(Property);
+        }
+        
+        public void Test30()
+        {
+            Assert(Method());
+        }
+
+        public void Test50()
+        {
+            var instance = new NewMembers();
+            instance._field = true;
+
+            Assert(instance._field);
+        }
+
+        public void Test51()
+        {
+            var instance = new NewMembers();
+            instance.Property = true;
+
+            Assert(instance.Property);
+        }
+
+        public void Test52()
+        {
+            var instance = new NewMembers();
+            
+            Assert(instance.Method());
+        }
+
+        public void Test60()
+        {
+            StaticField = true;
+            Assert(StaticField);
+        }
+
+        public void Test61()
+        {
+            StaticProperty = true;
+            Assert(StaticProperty);
+        }
+
+        public void Test62()
+        {
+            Assert(StaticMethod());
+        }
+        
+        public void Test70()
+        {
+            var newTypeInstance = new NewType();
+            newTypeInstance._field = true;
+            Assert(newTypeInstance._field);
+        }
+
+        public void Test71()
+        {
+            var newTypeInstance = new NewType();
+            newTypeInstance.Property = true;
+            Assert(newTypeInstance.Property);
+        }
+
+        public void Test72()
+        {
+            var newTypeInstance = new NewType();
+            Assert(newTypeInstance.Method());
+        }
+
+        public void Test73()
+        {
+            NewType.StaticField = true;
+            Assert(NewType.StaticField);
+        }
+
+        public void Test74()
+        {
+            NewType.StaticProperty = true;
+            Assert(NewType.StaticProperty);
+        }
+
+        public void Test75()
+        {
+            Assert(NewType.StaticMethod());
+        }
+
+        public void Test80()
+        {
+            MethodVoid();
+        }
+
+        public void Test81()
+        {
+            var n = new NewType();
+            n.MethodVoid();
+        }
+
+        public void Test82()
+        {
+            StaticMethodVoid();
+        }
+
+        public void Test83()
+        {
+            NewType.StaticMethodVoid();
+        }
+
+        public void Test90()
+        {
+            var obj = new NewType();
+            Assert(obj._fieldWithInit, "NewType._fieldWithInit");
+        }
+
+        public void Test91()
+        {
+            var obj = new NewType();
+            Assert(obj.PropertyWithInit, "NewType.PropertyWithInit");
+        }
+
+        // TODO: Static constructor call        
+        public void Test92()
+        {
+            Assert(StaticFieldWithInit);
+        }
+
+        public void Test93()
+        {
+            Assert(NewType.StaticPropertyWithInit, "NewType.StaticPropertyWithInit");
+        }
+        
+
+        public void Test100()
+        {
+            TestEvent += EventHandler;
+            TestEvent?.Invoke(this, "a");
+            TestEvent -= EventHandler;
+
+            Assert(_eventHandlerCalled, "_eventHandlerCalled");
+            Assert(TestEvent == null, "TestEvent == null");
+        }
+        
+        public void Test101()
+        {
+            double d = _newDoubleValue;
+            
+            Assert(d - 7.0 == 0);
+        }
+        
+        public void Test111()
+        {
+            Assert(StaticPropertyWithBody, "StaticPropertyWithBody");
+        }
+        
+        public void Test113()
+        {
+            Assert(NewType.StaticPropertyWithBody, "NewType.StaticPropertyWithBody");
+        }
+        
+        public void Test112()
+        {
+            var newTypeInstance = new NewType();
+            Assert(newTypeInstance.PropertyWithBody, "newTypeInstance.PropertyWithBody");
+        }
+
+        public void Test115() 
+        {
+            PropertyWithSetter = 5;
+            
+            AssertEqual(_propertyWithSetter, 5);
+        }
+        
+        /*public async Task Test120()
+        {
+            System.Diagnostics.Debug.WriteLine("1");
+            Assert(true);
+            System.Diagnostics.Debug.WriteLine("2");
+            int i = 0;
+            System.Diagnostics.Debug.WriteLine("3");
+            await Task.Delay(100);
+            System.Diagnostics.Debug.WriteLine("4");
+            i = 1;
+            System.Diagnostics.Debug.WriteLine("5");
+            Assert(i == 1);
+            System.Diagnostics.Debug.WriteLine("6");
+        }
+
+        public async Task Test130()
+        {
+            var result = await FromResultWithDelay(1);
+
+            AssertEqual(result, 1);
+        }
+
+        public async Task Test140()
+        {
+            var func = new Func<Task>(async () => await Delay(1).ConfigureAwait(false));
+
+            await func();
+        }
+
+        public async Task Test150()
+        {
+            var genericType = new NewGenericType<int>(1);
+
+            AssertEqual(genericType.Value, 1);
+        }
+
+        public void Test114()
+        {
+            var s = new NewMembersStruct();
+            
+            s.X = 100;
+            s.Y = 200;
+            
+            AssertEqual(s.X, 100);
+            AssertEqual(s.Y, 200);
+            AssertEqual(s.NewMethod(), 300);             
+        }
+        */
+        
+        public void Test200()
+        {
+            var s = MethodWithClosure(1);           
+            
+            AssertEqual(s, 5);             
+        }
+        
+        private void EventHandler(object o, string str)
+        {
+            _eventHandlerCalled = true;
+        }        
+        
+        private static async Task<T> FromResultWithDelay<T>(T val)
+        {
+            await Delay(1);
+            return val;
+        }
+        
+        private static Task Delay(int milliseconds)
+        {
+            Log.WriteLine("Delay called");
+            return Task.Delay(milliseconds);
+        }
+        
+        int MethodWithClosure(int input)
+        {
+            return new[] {1, 2}.Select(i => i + input).Sum();
+        }
+        
+        class NewGenericType<T>
+        {
+            public T Value;
+            
+            public NewGenericType(T initialValue) {
+                Value = initialValue;
+            }
+        }
+    }
+    
+    public struct NewMembersStruct
+    {
+        public int X;
+        public int Y;
+        
+        public int NewMethod()
+        {
+            return 300;
+        }
+    }
+}

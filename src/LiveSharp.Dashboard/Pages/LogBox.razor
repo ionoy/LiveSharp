@@ -1,0 +1,43 @@
+﻿@using LiveSharp.Dashboard.Services
+@inject DashboardLogger Logger
+@implements IDisposable 
+
+<div class="box">
+    <h3>Logs</h3>
+    
+    <div class="log-messages">
+        @foreach(var message in _messages) {
+            <p class="log-message">@message</p>
+        } 
+    </div>
+</div>
+
+@code {
+    readonly List<string> _messages = new List<string>();
+    
+    protected override void OnInitialized()
+    {
+        Logger.LogAppended += OnLogAppended;
+    }
+
+    private void OnLogAppended(object sender, string e)
+    {
+        InvokeAsync(() => {
+            AppendMessage(e);
+            StateHasChanged();
+        });
+    }
+
+    private void AppendMessage(string e)
+    {
+        _messages.Insert(0, e);   
+        if (_messages.Count > 128) {
+            _messages.RemoveAt(_messages.Count - 1);
+        }
+    }
+
+    public void Dispose()
+    {
+        Logger.LogAppended -= OnLogAppended;
+    }
+}

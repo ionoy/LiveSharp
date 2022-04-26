@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.wpb_row h2 {
+    @apply mt-4 mb-2 text-lg text-gray-300;
+}
+
+.wpb_row a {
+    @apply underline;
+}
+
+.wpb_row ul {
+    @apply list-disc;
+}
+
+.wpb_row .vc_column-inner {
+    @apply ml-4;
+}
+
+.wpb_row h2 {
+    @apply -ml-4;
+}

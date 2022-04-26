@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>9</LangVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>runtime.key.snk</AssemblyOriginatorKeyFile>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DefineConstants>LIVESHARP_RUNTIME;</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>Full</DebugType>
+    <DefineConstants>TRACE;LIVESHARP_RUNTIME</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Sources\KnownTypes.cs" Link="KnownTypes.cs" />
+    <Compile Include="..\Sources\NumericTypes.cs" Link="NumericTypes.cs" />
+<!--    <Compile Include="..\LiveSharp.Shared\Parsing\*.cs" LinkBase="Parsing\" />-->
+<!--    <Compile Include="..\LiveSharp.Shared\Debugging\*.cs" LinkBase="Debugging\" />-->
+<!--    <Compile Include="..\LiveSharp.Shared\Infrastructure\*.cs" LinkBase="Infrastructure\" />-->
+    <Compile Include="..\LiveSharp.Shared\**\*.cs" Link="*.cs" />
+    <Compile Remove="..\LiveSharp.Shared\obj\**\*.cs" />
+    <Compile Remove="..\LiveSharp.Shared\Network\LiveHost.cs" />
+    <Compile Remove="..\LiveSharp.Shared\Network\ILiveSharpTransport.cs" />
+    <Compile Remove="..\LiveSharp.Shared\Api\*" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\LiveSharp\LiveSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\LiveSharp.Runtime.NS21\bin\Debug\netstandard2.1\LiveSharp.Runtime.NS21.dll" Condition="Exists('..\LiveSharp.Runtime.NS21\bin\Debug\netstandard2.1\LiveSharp.Runtime.NS21.dll')">
+      <Link>Resources\LiveSharp.Runtime.NS21.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)..\..\build" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)..\..\build" />
+  </Target>
+
+</Project>

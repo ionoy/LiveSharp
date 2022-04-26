@@ -1,0 +1,123 @@
+﻿@implements IDisposable
+@using LiveSharp.Dashboard.Services
+@using LiveSharp.Shared.Debugging
+@using System.Collections.Concurrent
+@using System.Collections.Immutable
+@using LiveSharp.Dashboard.Models
+@using LiveSharp.Debugging
+@inject DebuggingService DebuggingService
+@inject DashboardLogger Logger
+
+<div class="box">
+    <table>
+        <tr>
+            <td>
+                @foreach (var type in _debuggerTree) {
+                    <span @onclick="SelectType(type.Value)">type.Key</span>
+                }
+            </td>
+            <td>
+                @if (_selectedType != null) {
+                    foreach (var method in _selectedType.Methods) {
+                        <div @onclick="SelectMethod(method.Value)">@method.Key</div>
+                    }
+                }
+            </td>
+            <td>
+                @if (_selectedMethod != null) {
+                    foreach (var invocation in _selectedMethod.Invocations) {
+                        <div @onclick="SelectInvocation(invocation.Value)">#@invocation.Key @DateTime.FromBinary(invocation.Value.StartEvent.Timestamp).ToString("HH:mm:ss fff")</div>
+                    }
+                }
+            </td>
+            <td>
+                @if (_selectedInvocation != null) {
+                    
+                }
+            </td>
+        </tr>
+    </table>
+</div>
+
+@code {
+    private DebugEventProcessor _debugEventProcessor;
+
+    private ConcurrentDictionary<string, DebuggerTreeTypeViewModel> _debuggerTree = new (); 
+    
+    private DebuggerTreeInvocationViewModel _selectedInvocation = null;
+    private DebuggerTreeTypeViewModel _selectedType;
+    private DebuggerTreeMethodViewModel _selectedMethod;
+
+    protected override void OnInitialized()
+    {
+        _debugEventProcessor = DebuggingService.EventProcessor;
+        
+        _debugEventProcessor.InvocationStarted += InvocationStarted;
+        _debugEventProcessor.DebugEventAdded += EventAdded;
+        
+        base.OnInitialized();
+    }
+
+    private async void EventAdded(DebugEvent debugEvent)
+    {
+        await InvokeAsync(() => {
+            var eventIsFromSelectedInvocation = _selectedInvocation?.StartEvent.InvocationId == debugEvent.InvocationId;
+            
+            if (eventIsFromSelectedInvocation && _selectedMethod != null) {
+                if (_selectedMethod.Invocations.TryGetValue(debugEvent.InvocationId, out var invocationVm))
+                    invocationVm.AddDebugEvent(debugEvent);
+            }
+            
+            StateHasChanged();
+        });
+    }
+
+    private async void InvocationStarted(StartDebugEvent startEvent)
+    {
+        await InvokeAsync(() => {
+            try {
+                var split = startEvent.MethodIdentifier.Split(' ', 2);
+
+                if (split.Length == 2) {
+                    var typeName = split[0];
+                    var methodName = split[1];
+                    var vm = _debuggerTree.GetOrAdd(typeName, t => new DebuggerTreeTypeViewModel(t));
+                    var methodVm = vm.Methods.GetOrAdd(methodName, m => new DebuggerTreeMethodViewModel(startEvent.MethodIdentifier, methodName, vm));
+
+                    methodVm.Invocations[startEvent.InvocationId] = new DebuggerTreeInvocationViewModel(startEvent);
+                }
+
+                StateHasChanged();
+            }
+            catch (Exception e) {
+                Logger.LogError("Debugger: InvocationStarted handler failed", e);
+            }
+        });
+    }
+
+    public void Dispose()
+    {
+        _debugEventProcessor.InvocationStarted -= InvocationStarted;
+        _debugEventProcessor.DebugEventAdded -= EventAdded;
+    }
+
+    private EventCallback SelectMethod(DebuggerTreeMethodViewModel method)
+    {
+        _selectedMethod = method;
+        return EventCallback.Empty;
+    }
+
+    private EventCallback SelectType(DebuggerTreeTypeViewModel type)
+    {
+        _selectedType = type;
+        return EventCallback.Empty;
+    }
+
+    private EventCallback SelectInvocation(DebuggerTreeInvocationViewModel invocation)
+    {
+        _selectedInvocation = invocation;
+        return EventCallback.Empty;
+    }
+
+
+}

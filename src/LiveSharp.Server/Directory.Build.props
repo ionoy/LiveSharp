@@ -1,0 +1,10 @@
+<Project>
+ <PropertyGroup>
+     <Version>2.1.1</Version>
+     <AssemblyVersion>$(Version)</AssemblyVersion>
+     <VersionPrefix>$(Version)</VersionPrefix>
+<!--     <VersionSuffix></VersionSuffix>-->
+<!--     <PackageVersion>$(Version)-$(VersionSuffix)</PackageVersion>-->
+     <PackageVersion>$(Version)</PackageVersion>
+ </PropertyGroup>
+</Project>

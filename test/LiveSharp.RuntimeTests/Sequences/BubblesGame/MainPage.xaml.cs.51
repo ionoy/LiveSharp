@@ -1,0 +1,164 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+
+
+using Xamarin.Forms.Markup;
+using Xamarin.Forms.Shapes;
+
+
+namespace XamarinWorkbench
+{
+    public partial class MainPage : ContentPage
+    {
+        private const float DesiredFps = 25;
+        private DateTime _lastFrame = DateTime.Now;
+        private GameState _gameState;
+        private Dictionary<Bubble, Ellipse> _bubbleShapes = new Dictionary<Bubble, Ellipse>();
+        private Grid _mainGrid;
+
+        public MainPage()
+        {
+            Build();
+        }
+
+        public void Build()
+        {
+            _gameState = new GameState();
+            _mainGrid = new Grid();
+            
+            Content = _mainGrid;
+
+            AppendFrame(_mainGrid);
+        }
+
+        private void AppendFrame(Grid mainGrid)
+        {
+            Device.PlatformServices.BeginInvokeOnMainThread(() =>
+            {
+                var frameTime = 1000 / DesiredFps;
+                var now = DateTime.Now;
+                
+                if (now - _lastFrame > TimeSpan.FromMilliseconds(frameTime)) {
+                    _lastFrame = now;
+                    
+                    ProcessFrame(mainGrid);
+                }
+                else {
+                    AppendFrame(mainGrid);
+                }
+            });
+        }
+
+        private void ProcessFrame(Grid mainGrid)
+        {
+            if (_gameState.NeedNewBubble) {
+                var bubble = _gameState.SpawnNewBubble();
+                var areaWidth = mainGrid.Width; 
+                var areaHeight = mainGrid.Height;
+
+                var bubbleShape = new Ellipse {
+                    Margin = new Thickness(areaWidth * bubble.X, areaHeight * bubble.Y, 0,0)
+                };
+                
+                _bubbleShapes[bubble] = bubbleShape;
+                bubbleShape.TapGesture(tap =>
+                {
+                    tap.Command = new Command(BubbleClicked);
+                    tap.CommandParameter = bubble;
+                });
+                
+                mainGrid.Children.Add(bubbleShape);
+            }
+
+            var bubblesCopy = _gameState.Bubbles.ToArray();
+            
+            foreach (var bubble in bubblesCopy) {
+                bubble.Update(DateTime.Now);
+
+                if (bubble.IsDead) {
+                    RemoveBubble(mainGrid, bubble);
+                    _gameState.MissCount++;
+                }
+            }
+
+
+
+            AppendFrame(mainGrid);
+        }
+
+        private void RemoveBubble(Grid mainGrid, Bubble bubble)
+        {
+            var shape = _bubbleShapes[bubble];
+            
+            mainGrid.Children.Remove(shape);
+            
+            _bubbleShapes.Remove(bubble);
+            _gameState.PopBubble(bubble);
+        }
+
+        private void BubbleClicked(object obj)
+        {
+            var bubble = (Bubble)obj;
+            RemoveBubble(_mainGrid, bubble);
+        }
+
+        class GameState
+        {
+            public int BubbleCounter { get; set; }
+
+            public bool NeedNewBubble => (DateTime.Now - _lastBubbleSpawn) > BubbleInterval;
+            public TimeSpan BubbleInterval => TimeSpan.FromSeconds(1 / (1 + BubbleCounter / 10.0f));
+            public List<Bubble> Bubbles { get; } = new List<Bubble>();
+            public int MissCount { get; set; }
+
+            private DateTime _lastBubbleSpawn;
+            private readonly Random _random = new Random();
+            public Bubble SpawnNewBubble()
+            {
+                var bubble = new Bubble {
+                    X = _random.NextDouble(),
+                    Y = _random.NextDouble()
+                };
+                Bubbles.Add(bubble);
+                
+                _lastBubbleSpawn = DateTime.Now;
+                return bubble;
+            }
+
+            public void PopBubble(Bubble bubble)
+            {
+                Bubbles.Remove(bubble);
+            }
+        }
+
+        class Bubble
+        {
+            public double X { get; set; }
+            public double Y { get; set; }
+            public double Size { get; set; }
+
+            public bool IsDead { get; set; }
+            
+            private readonly DateTime _birthTime = DateTime.Now;
+            
+            public void Update(DateTime now)
+            {
+                var age = now - _birthTime;
+                var lifeSpan = 5.0;
+
+                if (age.TotalSeconds > lifeSpan) {
+                    IsDead = true;
+                    return;
+                }
+                
+                var halfLife = lifeSpan / 2.0;
+                
+                Size = 0.1 + 0.9 * (halfLife - Math.Abs(halfLife - age.TotalSeconds));
+            }
+        }
+    }
+}

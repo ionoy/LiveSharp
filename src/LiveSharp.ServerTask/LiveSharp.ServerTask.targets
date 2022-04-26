@@ -1,0 +1,9 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="LiveSharp.ServerTask.dll" TaskName="LiveSharp.ServerTask.LiveSharpServerTask" />
+  
+  <Target Name="LiveSharpServerTask" 
+          AfterTargets="AfterCompile">
+    <LiveSharpServerTask>
+    </LiveSharpServerTask>
+  </Target>
+</Project>

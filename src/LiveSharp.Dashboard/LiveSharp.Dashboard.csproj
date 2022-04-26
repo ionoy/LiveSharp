@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DefineConstants>TRACE;</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="System.Reactive" Version="4.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LiveSharp.Workspace\LiveSharp.Workspace.csproj" />
+    </ItemGroup>
+    
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <CombinePath BasePath="$(ProjectDir)..\..\build" Paths="Workspace">
+            <Output TaskParameter="CombinedPaths" PropertyName="WorkspaceDir" />
+        </CombinePath>
+        <CreateItem Include="$(TargetDir)*.dll">
+            <Output TaskParameter="Include" ItemName="BinaryFiles" />
+        </CreateItem>
+        <CreateItem Include="$(TargetDir)*.pdb">
+            <Output TaskParameter="Include" ItemName="PdbFiles" />
+        </CreateItem>
+        <CreateItem Include="$(TargetDir)*.config">
+            <Output TaskParameter="Include" ItemName="ConfigFiles" />
+        </CreateItem>
+        <ItemGroup>
+            <WWWRootFiles Include="$(ProjectDir)\wwwroot\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(WWWRootFiles)" DestinationFolder="$(WorkspaceDir)\wwwroot\%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+        <Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(WorkspaceDir)" />
+        <Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(WorkspaceDir)" />
+        <Copy SourceFiles="@(ConfigFiles)" DestinationFolder="$(WorkspaceDir)" />
+    </Target>
+
+    <ItemGroup>
+      <Content Update="Pages\StatsBox.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\LogBox.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\DebuggerBox.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\InspectorBox.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+    </ItemGroup>
+
+<!--    <Import Project="$(SolutionDir)build\LiveSharp.targets" />-->
+</Project>

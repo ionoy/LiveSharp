@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="LiveSharp.Build.dll" TaskName="LiveSharp.Build.LiveSharpTask" TaskFactory="TaskHostFactory" />
+  <UsingTask AssemblyFile="LiveSharp.Build.dll" TaskName="LiveSharp.Build.PlatformCheckTask" TaskFactory="TaskHostFactory" />
+
+  <Target Name="InjectLiveSharpAssembly"
+          AfterTargets="PrepareForBuild" BeforeTargets="ResolveReferences"
+          Condition="!$(DefineConstants.Contains('LIVESHARP_DISABLE'))">
+    <Message Condition="$(Configuration) == 'Release' AND !$(DefineConstants.Contains('LIVESHARP_DISABLE'))" Text="You might want to disable LiveSharp for release builds. Use `LIVESHARP_DISABLE` compilation symbol to do that." />
+
+    <PropertyGroup Condition="@(Content) != ''">
+      <_LiveSharpContent>@(Content)</_LiveSharpContent>
+    </PropertyGroup>
+    <PropertyGroup Condition="@(Content) == ''">
+      <_LiveSharpContent>''</_LiveSharpContent>
+    </PropertyGroup>
+    <PropertyGroup Condition="@(PackageReference) != ''">
+      <_LiveSharpPackageReferences>@(PackageReference)</_LiveSharpPackageReferences>
+    </PropertyGroup>
+    <PropertyGroup Condition="@(PackageReference) == ''">
+      <_LiveSharpPackageReferences>''</_LiveSharpPackageReferences>
+    </PropertyGroup>
+
+    <PlatformCheckTask ProjectCapability="@(ProjectCapability)"
+                       PackageReferences="$(_LiveSharpPackageReferences)"
+                       ProjectDir="$(ProjectDir)"
+                       MSBuildThisFileDirectory="$(MSBuildThisFileDirectory)"
+                       Content="$(_LiveSharpContent)">
+      <Output TaskParameter="Platform" PropertyName="_LiveSharpPlatform" />
+    </PlatformCheckTask>
+
+    <Message Text="LiveSharp autodetect: $(_LiveSharpPlatform)" />
+
+    <ItemGroup Condition="$(_LiveSharpPlatform) == 'BlazorWASM'">
+    </ItemGroup>
+
+    <ItemGroup Condition="$(_LiveSharpPlatform) == 'Blazor'">
+    </ItemGroup>
+
+    <ItemGroup Condition="$(_LiveSharpPlatform) == 'Uno'">
+    </ItemGroup>
+
+    <ItemGroup Condition="$(_LiveSharpPlatform) == 'UnoWASM'">
+    </ItemGroup>
+
+    <ItemGroup Condition="$(_LiveSharpPlatform) == 'Xamarin.Forms'">
+    </ItemGroup>
+
+    <ItemGroup Condition="$(_LiveSharpPlatform) == 'Unknown'">
+    </ItemGroup>
+  </Target>
+
+  <Target Name="LiveSharpTask"
+          AfterTargets="AfterCompile"
+          Condition="Exists(@(IntermediateAssembly)) AND !$(DefineConstants.Contains('LIVESHARP_DISABLE')) AND Exists('$(MSBuildThisFileDirectory)LiveSharp.Runtime.dll')">
+    <LiveSharpTask AssemblyPath="@(IntermediateAssembly)"
+                   IntermediateOutputPath="$(IntermediateOutputPath)"
+                   References="@(ReferencePath)"
+                   AssemblyName="$(AssemblyName)"
+                   Sources="@(Compile)"
+                   Content="@(Content)"
+                   ProjectDir="$(ProjectDir)"
+                   SolutionPath="$(SolutionPath)"
+                   ProjectName="$(ProjectName)"
+                   NuGetPackagePath="$(MSBuildThisFileDirectory)"
+                   DefineConstants="$(DefineConstants)"
+                   LangVersion="$(LangVersion)"
+                   EmbeddedResource="@(EmbeddedResource)"
+                   RazorComponentWithTargetPath="@(RazorComponentWithTargetPath)"
+                   RootNamespace="$(RootNamespace)">
+    </LiveSharpTask>
+  </Target>
+</Project>
