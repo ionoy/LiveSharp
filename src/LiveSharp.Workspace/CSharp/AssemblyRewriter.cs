@@ -1,6 +1,4 @@
-﻿using LiveSharp.Rewriters;
-using LiveSharp.Rewriters.Serialization;
-using LiveSharp.Shared.Parsing;
+﻿using LiveSharp.Shared.Parsing;
 using Microsoft.CodeAnalysis;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -16,15 +14,17 @@ namespace LiveSharp.CSharp
     {
         private readonly Project _project;
         private readonly AssemblyContainer _assemblyContainer;
-        private readonly AssemblyDiff _assemblyDiff;
+//        private readonly AssemblyDiff _assemblyDiff;
         private readonly ILogger _logger;
         private readonly List<IDisposable> _stuffToDispose = new();
 
-        public AssemblyRewriter(Project project, AssemblyContainer assemblyContainer, AssemblyDiff assemblyDiff, ILogger logger)
+        public AssemblyRewriter(Project project, AssemblyContainer assemblyContainer, 
+            //AssemblyDiff assemblyDiff, 
+            ILogger logger)
         {
             _project = project;
             _assemblyContainer = assemblyContainer;
-            _assemblyDiff = assemblyDiff;
+            //_assemblyDiff = assemblyDiff;
             _logger = logger;
         }
 

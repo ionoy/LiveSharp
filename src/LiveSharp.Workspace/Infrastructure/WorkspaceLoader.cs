@@ -212,8 +212,20 @@ namespace LiveSharp.Infrastructure
             var additionalDocumentPaths = embeddedResource
                 .Concat(razorFiles)
                 .Concat(contentFilesWithoutRazor);
+            var isLaunchPadMode = defineConstants.Split(';').Contains("LIVESHARP_LAUNCHPAD_MODE");
+            var liveSharpConfig = DocumentInfo.Create(
+                DocumentId.CreateNewId(projectId),
+                ".livesharpconfig",
+                loader: TextLoader.From(
+                    TextAndVersion.Create(
+                        SourceText.From(
+                              $$"""
+                                    {
+                                        "IsLaunchPadMode": {{isLaunchPadMode}}
+                                    }
+                                """, Encoding.Default), VersionStamp.Create())));
             
-            var additionalDocuments = GetDocuments(additionalDocumentPaths, projectDir, projectId).ToArray();
+            var additionalDocuments = GetDocuments(additionalDocumentPaths, projectDir, projectId).Append(liveSharpConfig).ToArray();
             var analyzerConfigFiles = GetDocuments(analyzerConfigFilePaths, projectDir, projectId).ToArray();
 
             ImmutableArray<byte> publicKeyBuffer = ImmutableArray<byte>.Empty;

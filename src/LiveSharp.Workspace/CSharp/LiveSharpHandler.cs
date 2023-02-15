@@ -1,6 +1,4 @@
 ﻿using LiveSharp.Infrastructure;
-using LiveSharp.Rewriters;
-using LiveSharp.Rewriters.Serialization;
 using LiveSharp.Runtime;
 using LiveSharp.ServerClient;
 using LiveSharp.Shared.Network;
@@ -30,7 +28,7 @@ namespace LiveSharp.CSharp
     {
         private readonly ILogger _logger;
         private readonly LiveSharpWorkspace _workspace;
-        private readonly TypeRegistry _typeRegistry;
+        //private readonly TypeRegistry _typeRegistry;
         private readonly string _cachePath;
 
         private readonly ConcurrentDictionary<string, DateTime> _changeTimeMap = new();
@@ -40,7 +38,7 @@ namespace LiveSharp.CSharp
         {
             _logger = logger;
             _workspace = workspace;
-            _typeRegistry = new TypeRegistry(new RewriteLogger(logger.LogMessage, logger.LogWarning, logger.LogError, logger.LogError));
+            //_typeRegistry = new TypeRegistry(new RewriteLogger(logger.LogMessage, logger.LogWarning, logger.LogError, logger.LogError));
             _cachePath = Path.Combine(Path.GetTempPath(), "LiveSharp", "Cache");
 
             try {
@@ -83,8 +81,7 @@ namespace LiveSharp.CSharp
 
             var doc = solution.GetDocument(documentId);
             var semanticModel = await doc.GetSemanticModelAsync().ConfigureAwait(false);
-           
-            
+
             PrepareUpdatesAsync(doc.Project, semanticModel, doc.Name, isDryRun);
         }
 
@@ -135,26 +132,31 @@ namespace LiveSharp.CSharp
             if (_previousDisposableAssemblies.TryGetValue(project.Name, out var previousAssemblyContainer)) {
                 _logger.LogMessage("Updating " + documentName);
 
-                var processor = new AssemblyUpdateProcessor(previousAssemblyContainer.AssemblyDefinitionOriginal, assemblyContainer.AssemblyDefinitionOriginal,
-                    _logger);
-                var diff = processor.CreateDiff();
+                var upload = new AssemblyRewriteResult.NeedAssemblyUpload(assemblyContainer.AssemblyDefinitionForRewrite);
+                SendAssembly(upload.AssemblyBuffer);
 
-                if (diff.HasUpdates()) {
-                    _logger.LogDebug("Diff has updates");
-                    var documentSerializer = new DocumentSerializer(diff, _typeRegistry, assemblyContainer.AssemblyDefinitionOriginal.FullName);
-                    var documentElement = documentSerializer.Serialize();
-
-                    using var rewriter = new AssemblyRewriter(project, assemblyContainer, diff, _logger);
-                    var rewriteResult = rewriter.RewriteUpdatedAssembly();
-
-                    if (rewriteResult is AssemblyRewriteResult.Ok) {
-                        SendDocumentElement(documentElement);
-                    } else if (rewriteResult is AssemblyRewriteResult.NeedAssemblyUpload assemblyUpload) {
-                        SendDocumentWithAssembly(assemblyUpload.AssemblyBuffer, documentElement);
-                    }
-                } else {
-                    _logger.LogDebug("Diff doesn't have any updates");
-                }
+                return;
+                
+                // var processor = new AssemblyUpdateProcessor(previousAssemblyContainer.AssemblyDefinitionOriginal, assemblyContainer.AssemblyDefinitionOriginal,
+                //     _logger);
+                // var diff = processor.CreateDiff();
+                //
+                // if (diff.HasUpdates()) {
+                //     _logger.LogDebug("Diff has updates");
+                //     var documentSerializer = new DocumentSerializer(diff, _typeRegistry, assemblyContainer.AssemblyDefinitionOriginal.FullName);
+                //     var documentElement = documentSerializer.Serialize();
+                //
+                //     using var rewriter = new AssemblyRewriter(project, assemblyContainer, diff, _logger);
+                //     var rewriteResult = rewriter.RewriteUpdatedAssembly();
+                //
+                //     if (rewriteResult is AssemblyRewriteResult.Ok) {
+                //         SendDocumentElement(documentElement);
+                //     } else if (rewriteResult is AssemblyRewriteResult.NeedAssemblyUpload assemblyUpload) {
+                //         SendDocumentWithAssembly(assemblyUpload.AssemblyBuffer, documentElement);
+                //     }
+                // } else {
+                //     _logger.LogDebug("Diff doesn't have any updates");
+                // }
             }
             else {
                 _logger.LogWarning("Previous compilation is missing, try updating the code again");
@@ -176,10 +178,10 @@ namespace LiveSharp.CSharp
                     using var cacheAssembly = LoadCacheAssembly(currentCacheFile, project);
 
                     var processor = new AssemblyUpdateProcessor(cacheAssembly, assemblyContainerForSending.AssemblyDefinitionOriginal, _logger);
-                    var diff = processor.CreateDiff();
-
-                    if (diff.HasUpdates()) {
-                        _logger.LogMessage($"Project {project.Name} is out of date. Sending diff.");
+                    // var diff = processor.CreateDiff();
+                    //
+                    // if (diff.HasUpdates()) {
+                    //     _logger.LogMessage($"Project {project.Name} is out of date. Sending diff.");
 
                         // if (diff.HasIncompatibleUpdates && false) {
                         //     // using var rewriter = new AssemblyRewriter(assemblyContainerForSending, _logger);
@@ -187,12 +189,12 @@ namespace LiveSharp.CSharp
                         //     // SendDocumentWithAssembly(assemblyContainerForSending.AssemblyDefinitionForRewrite);
                         // }
                         //else {
-                            var documentSerializer =
-                                new DocumentSerializer(diff, _typeRegistry, assemblyContainerForSending.AssemblyDefinitionOriginal.FullName);
-                            var documentElement = documentSerializer.Serialize();
-                            SendDocumentElement(documentElement);
+                            // var documentSerializer =
+                            //     new DocumentSerializer(diff, _typeRegistry, assemblyContainerForSending.AssemblyDefinitionOriginal.FullName);
+                            // var documentElement = documentSerializer.Serialize();
+                            // SendDocumentElement(documentElement);
                         //}
-                    }
+                    //}
                 }
             }
         }
@@ -275,7 +277,7 @@ namespace LiveSharp.CSharp
                 }
             }
         }
-
+        
         private void SendDocumentWithAssembly(IReadOnlyList<byte> assemblyBuffer, XElement document)
         {
             var assemblyMessage = new ServerMessage(assemblyBuffer.ToArray(), ContentTypes.LiveSharp.AssemblyUpdate, MessageType.Broadcast, BroadcastGroups.LiveSharp);
@@ -293,6 +295,19 @@ namespace LiveSharp.CSharp
             var buffer = Encoding.Unicode.GetBytes(content);
             
             _workspace.SendBroadcast(buffer, ContentTypes.LiveSharp.DocumentElement, BroadcastGroups.LiveSharp);
+        }
+
+        private void SendAssembly(IReadOnlyList<byte> assemblyBuffer)
+        {
+            var assemblyMessage = new ServerMessage(assemblyBuffer.ToArray(), ContentTypes.LiveSharp.AssemblyUpdate, MessageType.Broadcast, BroadcastGroups.LiveSharp);
+            var buffer = assemblyMessage.CreateBuffer();
+            
+            var directoryName = Path.GetDirectoryName(typeof(LiveSharpHandler).Assembly.Location);
+            var buildDirectory = new DirectoryInfo(directoryName).Parent;
+            
+            File.WriteAllBytes(Path.Combine(buildDirectory.FullName, "livesharp.update"), buffer);
+
+            //_workspace.SendBroadcast(buffer, ContentTypes.LiveSharp.AssemblyUpdate, BroadcastGroups.LiveSharp);
         }
     }
 

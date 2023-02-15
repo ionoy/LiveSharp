@@ -40,7 +40,7 @@ namespace LiveSharp.Runtime
         public static IAsyncResult IAsyncResultForBuildTaskDontRemove;
         private static LiveSharpLogger _liveSharpLoggerWrapper;
 
-        public static string ProjectName { get; private set; }
+        public static string ProjectName { get; set; }
 
         public static void Start(string ip, string solutionPath, string projectName, string projectDir, string projectReferences, string nuGetPackagePath, Type liveXamlPluginType = null, ILiveSharpTransport transport = null, ILiveSharpDashboard dashboard = null)
         {
@@ -88,7 +88,7 @@ namespace LiveSharp.Runtime
 
             // LiveBlazor.Dashboard has LiveSharp.Runtime injected but doesn't need to connect
             // it feeds all of the updates in-process
-            if (projectInfo.ProjectName != "LiveBlazor.Dashboard") {
+            if (projectInfo.ProjectName != "LiveBlazor.Dashboard" && !string.IsNullOrWhiteSpace(ip)) {
                 ServerHandshake
                     .ConnectToServer(handshakeHost, projectInfo, transport, Logger)
                     .ContinueWith(task => {
@@ -305,7 +305,6 @@ namespace LiveSharp.Runtime
                     
                     //new LiveSharpAssemblyUpdate()
                     // var updatedAssembly = AssemblyContextRegistry.AddAssembly(Assembly.Load(assemblyBuffer));
-                    // _proxy.AssemblyUpdateReceived(updatedAssembly.Assembly);
                 }
             }
             catch (Exception e) {

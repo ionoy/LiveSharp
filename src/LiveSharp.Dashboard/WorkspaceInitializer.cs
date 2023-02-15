@@ -55,6 +55,8 @@ namespace LiveSharp.Dashboard
             .ContinueWith(task => {
                 
             });
+            
+            CreateWorkspace();
         }
 
         private void CreateWorkspace()

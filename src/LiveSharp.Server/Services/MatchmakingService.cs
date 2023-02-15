@@ -144,7 +144,7 @@ namespace LiveSharp.Server.Services
         }
     }
 
-    public record WorkspaceInfo(Process Process, ProjectInfo ProjectInfo, WorkspaceAddress Address);
+    public record WorkspaceInfo(Process Process, ProjectInfo ProjectInfo, WorkspaceAddress Address, bool IsLaunchpadMode = false);
 
     public record WorkspaceAddress(string projectId, string serverAddress, int tcpServerPort);
 }

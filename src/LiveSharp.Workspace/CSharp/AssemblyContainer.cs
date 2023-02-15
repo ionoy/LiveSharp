@@ -10,7 +10,7 @@ namespace LiveSharp.CSharp
         private readonly AssemblyDefinition _assemblyDefinitionRewritten;
         private readonly AssemblyDefinition _assemblyDefinitionOriginal;
         private bool _isDisposed;
-
+        
         public AssemblyDefinition AssemblyDefinitionOriginal {
             get {
                 if (_isDisposed)
@@ -29,8 +29,8 @@ namespace LiveSharp.CSharp
 
         public AssemblyContainer(MemoryStream memoryStream, MemoryStream pdbMemoryStream, IAssemblyResolver resolve)
         {
-            _assemblyDefinitionOriginal = CreateAssemblyDefinition(memoryStream, pdbMemoryStream, resolve);
-            _assemblyDefinitionRewritten = CreateAssemblyDefinition(memoryStream, pdbMemoryStream, resolve);
+            //_assemblyDefinitionOriginal = CreateAssemblyDefinition(memoryStream, pdbMemoryStream, resolve);
+            _assemblyDefinitionOriginal = _assemblyDefinitionRewritten = CreateAssemblyDefinition(memoryStream, pdbMemoryStream, resolve);
         }
         
         private AssemblyDefinition CreateAssemblyDefinition(MemoryStream memoryStream, MemoryStream pdbMemoryStream, IAssemblyResolver resolver)
