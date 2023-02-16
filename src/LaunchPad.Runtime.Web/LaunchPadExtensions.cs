@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 
@@ -20,21 +22,77 @@ public static class LaunchPadExtensions
         
         app.Services.AddTransient<IHost, LaunchPadHost>();
         
-        var applicationPartManager = (ApplicationPartManager)app.Services.LastOrDefault((d => d.ServiceType == typeof (ApplicationPartManager)))?.ImplementationInstance!;
-        var allAssemblyParts = applicationPartManager.ApplicationParts.ToArray();
-        var partsToSkip = new[] {typeof(AssemblyPart), typeof(CompiledRazorAssemblyPart)};
-        
-        applicationPartManager.ApplicationParts.Clear();
-        
-        PopulateDefaultParts(applicationPartManager, Assembly.GetEntryAssembly()?.GetName()?.Name);
-
-        foreach (var applicationPart in allAssemblyParts) {
-            if (!partsToSkip.Contains(applicationPart.GetType()))
-                applicationPartManager.ApplicationParts.Add(applicationPart);
+        if (LaunchPadRuntime.IsUpdated) {
+            var applicationPartManager = new ApplicationPartManager();
+            PopulateDefaultParts(applicationPartManager, Assembly.GetEntryAssembly()?.GetName()?.Name);
+            app.Services.TryAddSingleton(applicationPartManager);
         }
         
         return app;
     }
+
+    public static WebApplicationBuilder ReplaceServices(this WebApplicationBuilder app)
+    {
+        var servicesToReplace = new List<ServiceDescriptor>();
+        
+        foreach (var serviceDescriptor in app.Services) 
+        {
+            var updatedServiceType = GetUpdatedType(serviceDescriptor.ServiceType);
+            var updatedImplementationType = GetUpdatedType(serviceDescriptor.ImplementationType);
+        
+            if (updatedServiceType == null) {
+                Console.WriteLine("Updated service type is null for service type " + serviceDescriptor.ServiceType?.FullName + " in assembly " + serviceDescriptor.ServiceType?.Assembly.FullName + "");
+                continue;
+            }
+            
+            if (updatedImplementationType == null) {
+                Console.WriteLine("Updated implementation type is null for service type " + serviceDescriptor.ServiceType?.FullName + " in assembly " + serviceDescriptor.ServiceType?.Assembly.FullName + "");
+                continue;
+            }
+            
+            if (updatedServiceType != serviceDescriptor.ServiceType || updatedImplementationType != serviceDescriptor.ImplementationType)
+                servicesToReplace.Add(ServiceDescriptor.Describe(updatedServiceType, updatedImplementationType, serviceDescriptor.Lifetime));
+        }
+        
+        foreach (var serviceDescriptor in servicesToReplace) {
+            app.Services.Replace(serviceDescriptor);
+        }
+
+        return app;
+    }
+
+    private static Type? GetUpdatedType(Type? type)
+    {
+        if (type == null)
+            return type;
+            
+        var typeAssembly = type.Assembly;
+        var assemblyName = typeAssembly.GetName().Name;
+            
+        if (assemblyName == null)
+            return type;
+
+        if (type.FullName == null) {
+            Console.WriteLine("Could not find full name for type " + type.FullName + " in assembly " + typeAssembly.FullName + "");
+            return type;
+        }
+            
+        if (LaunchPadRuntime.UpdatedAssemblies.TryGetValue(assemblyName, out var updatedAssembly)) {
+            if (typeAssembly != updatedAssembly) {
+                var updatedType = updatedAssembly.GetType(type.FullName);
+
+                if (updatedType == null) {
+                    Console.WriteLine("Could not find type " + type.FullName + " in updated assembly " + updatedAssembly.FullName);
+                    return type;
+                }
+
+                return updatedType;
+            }
+        }
+        
+        return type;
+    }
+    
     private static void WebApplicationUpdateHandler(Assembly newAssembly)
     {
         var programType = newAssembly.DefinedTypes.FirstOrDefault(t => t.Name == "Program");
@@ -48,7 +106,7 @@ public static class LaunchPadExtensions
             Console.WriteLine(controllerMethod.Name);
         }
         
-        var result = mainMethod?.Invoke(null, new object[] {_args});
+        var result = mainMethod?.Invoke(null, new object[] {_args.Append("--launchpadreload").ToArray()});
         
         Console.WriteLine("!!!!!Result is " + result);
         

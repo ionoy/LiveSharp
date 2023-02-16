@@ -3,6 +3,7 @@ using LiveSharp;
 using LiveSharp.Runtime.Network;
 using LiveSharp.Runtime.Parsing;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Concurrent;
 
 namespace LaunchPad.Runtime;
 
@@ -10,8 +11,11 @@ public class LaunchPadRuntime
 {
     public static LaunchPadAssemblyLoadContext CurrentAssemblyLoadContext { get; set; } = new ();
     public static bool IsRunning { get; set; }
-    public static IHost Host { get; set; }
+    public static bool IsUpdated { get; set; }
     
+    public static IHost Host { get; set; }
+    public static ConcurrentDictionary<string, Assembly> UpdatedAssemblies { get; } = new ();
+
     public static Action<Assembly> UpdateHandler { get; set; }
 
     public static void StartListeningForNewAssemblies(string[] args)
@@ -20,7 +24,7 @@ public class LaunchPadRuntime
             //var buildDir = Path.GetDirectoryName(typeof(LiveSharpRuntime).Assembly.Location);
             var buildDir = @"c:\projects\livesharp\build";
             var updateFilename = Path.Combine(buildDir, "livesharp.update");
-            var projectName = "LiveSharpLaunchPadSample";
+            var projectName = "Docutrack";
             var messageParser = new MessageParser(null);
             var allAssemblies = new Dictionary<string, LiveSharpAssemblyUpdate>();
 
@@ -35,24 +39,32 @@ public class LaunchPadRuntime
 
                 if (assemblyUpdate.Name == projectName)
                 {
+                    IsUpdated = true;
+                    
                     Console.WriteLine("Unloading assembly load context");
                     CurrentAssemblyLoadContext.Unload();
                     CurrentAssemblyLoadContext = new LaunchPadAssemblyLoadContext(allAssemblies.Values.ToArray());
 
                     var projectAssembly = CurrentAssemblyLoadContext.LoadFromAssemblyName(new AssemblyName(projectName));
 
+                    UpdatedAssemblies[projectName] = projectAssembly;
+                    
                     UpdateHandler?.Invoke(projectAssembly);
                 }
             };
 
             while (true)
             {
-                if (File.Exists(updateFilename))
-                {
-                    var updateBuffer = File.ReadAllBytes(updateFilename);
-                    File.Delete(updateFilename);
+                try {
+                    if (File.Exists(updateFilename))
+                    {
+                        var updateBuffer = File.ReadAllBytes(updateFilename);
+                        File.Delete(updateFilename);
 
-                    messageParser.Feed(updateBuffer, updateBuffer.Length);
+                        messageParser.Feed(updateBuffer, updateBuffer.Length);
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine(e);
                 }
 
                 await Task.Delay(500);

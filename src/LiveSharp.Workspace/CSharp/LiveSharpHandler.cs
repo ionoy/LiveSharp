@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -80,8 +81,11 @@ namespace LiveSharp.CSharp
                 solution.Workspace.TryApplyChanges(solution);
 
             var doc = solution.GetDocument(documentId);
+            var sw = new Stopwatch();
+            sw.Start();
             var semanticModel = await doc.GetSemanticModelAsync().ConfigureAwait(false);
-
+            sw.Stop();
+            Console.WriteLine($"Semantic model created in {sw.ElapsedMilliseconds} ms");
             PrepareUpdatesAsync(doc.Project, semanticModel, doc.Name, isDryRun);
         }
 
@@ -107,9 +111,12 @@ namespace LiveSharp.CSharp
 
                     return;
                 }
-
+                var sw = new Stopwatch();
+                sw.Start();
                 var disposableAssembly = CreateDynamicAssembly(semanticModel.Compilation, project, _logger);
-
+                sw.Stop();
+                Console.WriteLine($"Assembly created in {sw.ElapsedMilliseconds} ms");
+                
                 if (!isDryRun) {
                     MainUpdate(project, documentName, disposableAssembly);
                 }

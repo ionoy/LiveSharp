@@ -115,7 +115,8 @@ namespace LiveSharp
                     }
 
                     if (newDocuments.Any()) {
-                        var newSolution = Workspace.CurrentSolution.AddDocuments(newDocuments.ToImmutableArray());
+                        //var newSolution = Workspace.CurrentSolution.AddDocuments(newDocuments.ToImmutableArray());
+                        var newSolution = Workspace.CurrentSolution;
                         Workspace.TryApplyChanges(newSolution);
                         var updatedProject = newSolution.Projects.FirstOrDefault(p => p.Name == project.Name);
                         
