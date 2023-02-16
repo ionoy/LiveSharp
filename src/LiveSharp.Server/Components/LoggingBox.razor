@@ -70,18 +70,11 @@
   {
     LoggingService
       .RuntimeLogs
+        .Merge(LoggingService.WorkspaceLogs)
+        .Merge(LoggingService.ServerLogs)
       .Buffer(TimeSpan.FromMilliseconds(50))
-      .Subscribe(LogsReceived);
-        
-    LoggingService
-      .WorkspaceLogs
-      .Buffer(TimeSpan.FromMilliseconds(50))
-      .Subscribe(LogsReceived);
-        
-    LoggingService
-      .ServerLogs
-      .Buffer(TimeSpan.FromMilliseconds(50))
-      .Subscribe(LogsReceived);
+      .Where(l => l.Any())
+      .Subscribe(LogsReceived);        
   }
 
   void LogsReceived(IList<LogItem> logs)
@@ -91,8 +84,8 @@
         _logItems.Add(message);
       }
         
-      if (_logItems.Count > 128)
-        _logItems.RemoveRange(127, _logItems.Count - 128);
+      if (_logItems.Count > 256)
+        _logItems.RemoveRange(0, _logItems.Count - 256);
       StateHasChanged();
     });
   }

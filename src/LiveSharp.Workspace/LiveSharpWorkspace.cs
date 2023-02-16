@@ -96,23 +96,23 @@ namespace LiveSharp
                     var razorDocuments = project.AdditionalDocuments.Where(d => d.Name.EndsWith(".razor"));
                     var newDocuments = new List<DocumentInfo>();
 
-                    foreach (var razorDocument in razorDocuments) {
-                        var generatedCode = _razorHandler.GetGeneratedCode(razorDocument);
-                        
-                        if (!project.TryFindRazorGeneratedDocument(razorDocument.Name, out var generatedDocumentId, out var generatedFileName)) {
-                            var filePath = Path.Combine(project.FilePath, generatedFileName);
-                            var newDocument = DocumentInfo.Create(
-                                DocumentId.CreateNewId(project.Id),
-                                generatedFileName,
-                                loader: TextLoader.From(
-                                    TextAndVersion.Create(
-                                        SourceText.From(generatedCode, Encoding.Default), VersionStamp.Create())),
-                                filePath: filePath);
-                            newDocuments.Add(newDocument);
-                            
-                            _ephemeralDocuments.Add(filePath);
-                        }
-                    }
+                    // foreach (var razorDocument in razorDocuments) {
+                    //     var generatedCode = _razorHandler.GetGeneratedCode(razorDocument);
+                    //     
+                    //     if (!project.TryFindRazorGeneratedDocument(razorDocument.Name, out var generatedDocumentId, out var generatedFileName)) {
+                    //         var filePath = Path.Combine(project.FilePath, generatedFileName);
+                    //         var newDocument = DocumentInfo.Create(
+                    //             DocumentId.CreateNewId(project.Id),
+                    //             generatedFileName,
+                    //             loader: TextLoader.From(
+                    //                 TextAndVersion.Create(
+                    //                     SourceText.From(generatedCode, Encoding.Default), VersionStamp.Create())),
+                    //             filePath: filePath);
+                    //         newDocuments.Add(newDocument);
+                    //         
+                    //         _ephemeralDocuments.Add(filePath);
+                    //     }
+                    // }
 
                     if (newDocuments.Any()) {
                         var newSolution = Workspace.CurrentSolution.AddDocuments(newDocuments.ToImmutableArray());
